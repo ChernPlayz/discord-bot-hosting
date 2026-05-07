@@ -1,4 +1,4 @@
-import discord, logging, os, asyncio
+import discord, logging, os
 from discord.ext import commands
 from dotenv import load_dotenv
 from webserver import keep_alive
