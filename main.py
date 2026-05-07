@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 guild = discord.Object(id=1156550837993222295)
 
 async def loadCogs():
-  for fileName in os.listdir("Discord Bot/cogs"):
+  for fileName in os.listdir("cogs"):
     if fileName.endswith(".py"):
       try:
         await bot.load_extension(f"cogs.{fileName[:-3]}")
