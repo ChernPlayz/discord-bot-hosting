@@ -45,13 +45,11 @@ async def on_ready():
 async def on_member_join(member):
   await member.send(f"Welcome to the server! {member.name}")
 
-async def main():
-  async with bot:
-    await loadCogs()
-    await bot.start(token)
+async def setup_hook():
+  await loadCogs()
 
-asyncio.run(main())
-#bot.run(token, log_handler=handler, log_level=logging.DEBUG)
+bot.setup_hook = setup_hook
+bot.run(token, log_handler=handler, log_level=logging.DEBUG)
 """
 # Add reaction
 @bot.event
