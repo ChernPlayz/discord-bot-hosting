@@ -11,7 +11,7 @@ class Moderation(commands.Cog):
       1501594372104261692, #Moderator
       ]
     self.warn_data = {}
-    self.warning_file = "Discord Bot/warnings.json"
+    self.warning_file = "warnings.json"
     self.warn_data = self.load_warnings()
 
   def load_warnings(self):
