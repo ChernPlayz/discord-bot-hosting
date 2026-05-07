@@ -1,4 +1,4 @@
-import discord, math, re, sympy
+import discord, math, sympy
 from discord.ext import commands
 from discord import app_commands
 
@@ -27,10 +27,6 @@ class Calculator(commands.Cog):
 
     expression = expression.replace("^","**")
     expression = expression.replace("Ans", str(ans))
-    expression = expression.replace(" ", "")
-
-    if not re.match(r"^[0-9+\-*/().,\sA-Za-z_**]*$", expression):
-      return "Invalid characters"
 
     try:
       if expression.startswith("frac "):
