@@ -1,14 +1,12 @@
-import discord, math, sympy
+import discord, math, re
 from discord.ext import commands
 from discord import app_commands
 
 class Calculator(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
-    self.ans_memory = {}
 
   def evaluate(self, user_id: int, expression: str):
-    """
     allowed_names = {
       "sin": math.sin,
       "cos": math.cos,
@@ -21,35 +19,21 @@ class Calculator(commands.Cog):
       "abs": abs,
       "pow": pow
     }
-    """
 
     ans = self.ans_memory.get(user_id, 0)
 
-    expression = expression.replace("^","**")
     expression = expression.replace("Ans", str(ans))
+    expression = expression.replace("^", "**")
+    expression = expression.replace(" ", "")
+
+    if not re.match(r"^[0-9+\-*/().,\sA-Za-z_]*$", expression):
+      return "Invalid characters"
 
     try:
-      if expression.startswith("frac "):
-        value = expression.replace("frac ", "")
-        result = sympy.Rational(value)
-
-      # DIFFERENTIATION
-      elif expression.startswith("diff "):
-        expr = expression.replace("diff ", "")
-        result = sympy.diff(sympy.sympify(expr), sympy.Symbol('x'))
-
-      # INTEGRATION
-      elif expression.startswith("int "):
-        expr = expression.replace("int ", "")
-        result = sympy.integrate(sympy.sympify(expr), sympy.Symbol('x'))
-
-      else:
-        result = sympy.sympify(expression)
-        result = sympy.simplify(result)
-
+      result = eval(expression, {"__builtins__": {}}, allowed_names)
       self.ans_memory[user_id] = result
       return result
-    
+
     except Exception as err:
       return f"Error: {err}"
 
