@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from webserver import keep_alive
 
 load_dotenv()
-token = os.getenv("TOKEN")
+token = os.getenv("DISCORD_TOKEN")
 
 keep_alive()
 
