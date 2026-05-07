@@ -5,6 +5,7 @@ from discord import app_commands
 class Calculator(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
+    self.ans_memory = {}
 
   def evaluate(self, user_id: int, expression: str):
     allowed_names = {
