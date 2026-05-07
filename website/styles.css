@@ -1,0 +1,53 @@
+body{
+  background-color: rgb(47,53,58);
+}
+
+textarea{
+  resize: vertical;
+}
+
+.embedContainer{
+  background-color: rgb(58,65,73);
+  width: 500px;
+  height: 600px;
+  padding: 10px;
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.embedBtns{
+  margin-bottom: 10px;
+}
+
+.embedBtns button{
+  background-color: rgb(0,137,210);
+  color: white;
+  width: 150px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  margin: 5px;
+}
+
+#embedTitle{
+  margin-top: 0px;
+  color: white;
+}
+
+#embedTextbox{
+  background-color: rgb(81,91,101);
+  width: 450px;
+  height: 150px;
+  border: 1px solid black;
+  font-size: 20px;
+  color: white;
+  padding: 6px 12px 6px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(30, 34, 37) rgba(58, 65, 73, 0.75);
+}
+
+#wordcount{
+  margin-top: 0px;
+  color: white;
+}
