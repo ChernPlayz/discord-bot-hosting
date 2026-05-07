@@ -218,6 +218,8 @@ class Moderation(commands.Cog):
     self.warn_data[user_id].append(warning_data)
     self.save_warnings()
 
+    await interaction.response.send_message(f"{member.mention} has been warned\nReason: {reason}\nTotal warnings: {warn_count}")
+
     warn_count = len(self.warn_data[user_id])
 
     if warn_count >= 3:
@@ -237,9 +239,7 @@ class Moderation(commands.Cog):
       except discord.Forbidden:
         await interaction.response.send_message("I don't have permission to ban this user", ephemeral=True)
         return
-
-    await interaction.response.send_message(f"{member.mention} has been warned\nReason: {reason}\nTotal warnings: {warn_count}")
-
+      
   # warnings
   @app_commands.command(name="warnings", description="Check the number of warnings of a member")
   @app_commands.checks.has_permissions(manage_messages=True)
