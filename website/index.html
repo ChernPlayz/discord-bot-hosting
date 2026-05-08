@@ -11,17 +11,59 @@
 <body>
   <div class="embedContainer">
     <div>
-      <h1 id="embedTitle">Embed Builder</h1>
+      <h1 id="title">Embed Builder</h1>
     </div>
+
+    <hr>
 
     <div class="embedBtns">
-      <button id="createEmbedBtn">Create Embed</button>
-      <button id="editEmbedBtn">Edit Embed</button>
+      <button>Create Embed</button>
+      <button>Edit Embed</button>
     </div>
 
+    <hr>
+
     <div>
-      <textarea id="embedTextbox" placeholder="Input something here"></textarea>
-      <h5 id="wordcount">0/2000</h5>
+      <textarea id="embedTextbox" placeholder="Text sent with the embed"></textarea>
+      <h5 class="wordCount">0/2000</h5>
+    </div>
+
+    <hr>
+
+    <div class="embedMaker">
+      <div class="color-picker">
+        <input type="color" id="color-chooser">
+        <label for="color-chooser" id="color-output">#000000</label>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-1">
+          <input type="text" placeholder="Icon URL">
+        </div>
+        <div class="col-2">
+          <input type="text" placeholder="Name">
+        </div>
+        <div class="col-1">
+          <input type="text" placeholder="Name URL">
+        </div>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-3">
+          <input maxlength="300" placeholder="Title">
+          <h5 class="wordCount">0/300</h5>
+        </div>
+        <div class="col-1">
+          <input placeholder="Title URL">
+        </div>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-3">
+          <textarea id="embed-desc" maxlength="2000" placeholder="Description"></textarea>
+          <h5 class="wordCount">0/2000</h5>
+        </div>
+      </div>
     </div>
   </div>
 

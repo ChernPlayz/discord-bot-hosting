@@ -1,10 +1,5 @@
-# environment variables
 .env
-
-# logs
-discord.log
-warnings.json
-
-# python cache
+*.log
+*.json
 __pycache__/
 *.pyc
