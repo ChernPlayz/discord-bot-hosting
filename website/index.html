@@ -25,7 +25,7 @@
 
     <div>
       <textarea id="embedTextbox" placeholder="Text sent with the embed"></textarea>
-      <h5 class="wordCount">0/2000</h5>
+      <h5 id="wordCount">0/2000</h5>
     </div>
 
     <hr>
@@ -37,33 +37,90 @@
       </div>
 
       <div class="embed-container">
-        <div class="col-1">
+        <div class="col-3">
           <input type="text" placeholder="Icon URL">
         </div>
-        <div class="col-2">
+        <div class="col-6">
           <input type="text" placeholder="Name">
         </div>
-        <div class="col-1">
+        <div class="col-3">
           <input type="text" placeholder="Name URL">
         </div>
       </div>
 
       <div class="embed-container">
-        <div class="col-3">
+        <div class="col-9">
           <input maxlength="300" placeholder="Title">
-          <h5 class="wordCount">0/300</h5>
+          <h5 id="wordCount">0/300</h5>
         </div>
-        <div class="col-1">
+        <div class="col-3">
           <input placeholder="Title URL">
         </div>
       </div>
 
       <div class="embed-container">
-        <div class="col-3">
+        <div class="col-12">
           <textarea id="embed-desc" maxlength="2000" placeholder="Description"></textarea>
-          <h5 class="wordCount">0/2000</h5>
+          <h5 id="wordCount">0/2000</h5>
         </div>
       </div>
+
+      <div class="embed-container">
+        <div class="col-10">
+          <input maxlength="300" placeholder="Title for Field 1">
+          <h5 id="wordCount">0/300</h5>
+        </div>
+        <div class="col-2">
+          <label for="inline">Inline: </label>
+          <input type="checkbox" id="inlineCheckbox">
+        </div>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-11">
+          <textarea id="embed-desc" maxlength="1000" placeholder="Description"></textarea>
+          <h5 id="wordCount">0/1000</h5>
+        </div>
+        <div class="col-1">
+          <button id="removeFieldBtn">X</button>
+        </div>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-3">
+          <button id="addFieldBtn">Add Field</button>
+          <h5 id="fieldCount">0/25 Fields</h5>
+        </div>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-6">
+          <input type="text" placeholder="Image URL">
+        </div>
+        <div class="col-6">
+          <input type="text" placeholder="Thumbnail URL">
+        </div>
+      </div>
+
+      <div class="embed-container">
+        <div class="col-4">
+          <input type="text" placeholder="Footer">
+          <h5 id="wordCount">0/300</h5>
+        </div>
+        <div class="col-4">
+          <input type="text" placeholder="Footer Icon URL">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button id="addEmbedBtn">Add Embed</button>
+    </div>
+
+    <hr>
+
+    <div>
+      <h3>Destination</h3>
     </div>
   </div>
 

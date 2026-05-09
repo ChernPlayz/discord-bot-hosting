@@ -3,8 +3,32 @@
 }
 
 body{
-  background-color: rgb(47,53,58);
+  background-color: rgb(47, 53, 58);
   font-family: Roboto, sans-serif;
+}
+
+h3{
+  color: white;
+}
+
+h5{
+  color: white;
+  margin: 0px 0px 0px 0px;
+}
+
+label{
+  font-size: 15px;
+  color: white;
+}
+
+button{
+  font-family: Roboto, sans-serif;
+  font-size: 15px;
+  width: 100%;
+  border: 1.5px solid black;
+  border-radius: 5px;
+  background-color: rgb(115, 129, 143);
+  color: white;
 }
 
 hr{
@@ -12,15 +36,26 @@ hr{
 }
 
 textarea{
+  background-color: rgb(81, 91, 101);
+  color: white;
   resize: vertical;
   font-size: 15px;
-  padding: 5px 5px 5px 5px;
+  padding: 6px 12px 6px 12px;
+  width: 100%;
   height: 30px;
   border: 1px solid black;
   border-radius: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(30, 34, 37) rgba(58, 65, 73, 0.75);
+}
+
+textarea::placeholder{
+  color: rgb(200, 200, 200);
 }
 
 input{
+  background-color: rgb(81, 91, 101);
+  color: white;
   font-size: 15px;
   padding: 5px 5px 5px 5px;
   height: 30px;
@@ -28,11 +63,15 @@ input{
   border-radius: 5px;
 }
 
+input::placeholder{
+  color: rgb(200, 200, 200);
+}
+
 .embedContainer{
-  background-color: rgb(58,65,73);
+  background-color: rgb(58, 65, 73);
   width: 500px;
   max-width: 90vw;
-  height: 1000px;
+  height: auto;
   padding: 10px;
   border: 2px solid black;
   border-radius: 10px;
@@ -44,30 +83,17 @@ input{
 }
 
 .embedBtns button{
-  background-color: rgb(0,137,210);
+  background-color: rgb(0, 137, 210);
   color: white;
   width: 150px;
   height: 40px;
   border: none;
   border-radius: 5px;
-  font-size: 20px;
   margin: 5px;
 }
 
 #embedTextbox{
-  background-color: rgb(81,91,101);
-  width: 100%;
   height: 150px;
-  font-size: 20px;
-  color: white;
-  padding: 6px 12px 6px 12px;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(30, 34, 37) rgba(58, 65, 73, 0.75);
-}
-
-.wordCount{
-  margin: 0px 0px 0px 0px;
-  color: white;
 }
 
 .embedMaker{
@@ -81,7 +107,7 @@ input{
 }
 
 #color-chooser{
-  background-color: black;
+  background-color: rgb(0, 0, 0);
 }
 
 #color-output{
@@ -106,11 +132,68 @@ input{
   flex: 3;
 }
 
-.col-1 input, .col-2 input, .col-3 input{
+.col-4{
+  flex: 4;
+}
+
+.col-5{
+  flex: 5;
+}
+
+.col-6{
+  flex: 6;
+}
+
+.col-7{
+  flex: 7;
+}
+
+.col-8{
+  flex: 8;
+}
+
+.col-9{
+  flex: 9;
+}
+
+.col-10{
+  flex: 10;
+}
+
+.col-11{
+  flex: 11;
+}
+
+.col-12{
+  flex: 12;
+}
+
+.col-1 input, .col-2 input, .col-3 input, .col-4 input, .col-5 input, .col-6 input, .col-7 input, .col-8 input, .col-9 input, .col-10 input, .col-11 input, .col-12 input{
   width: 100%;
 }
 
 #embed-desc{
   width: 100%;
   height: 100px;
+}
+
+#inlineCheckbox{
+  width: 14px;
+  height: 14px;
+  margin: 5px 5px 5px 5px;
+}
+
+#removeFieldBtn{
+  background-color: red;
+  color: white;
+  border: 2px solid black;
+  border-radius: 20px;
+  width: 30px;
+  height: 30px;
+  font-size: 100%;
+  font-weight: bold;
+}
+
+#addEmbedBtn{
+  margin-top: 25px;
 }
