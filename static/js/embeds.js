@@ -27,7 +27,6 @@ const embedChannelSelect = document.getElementById("embed-channel-select");
 
 /* DOM Content Loaded */
 document.addEventListener("DOMContentLoaded", () => {
-  loadUserInfo();
   loadGuilds();
   fieldCount.textContent = `${fieldsContainer.children.length}/${maxFieldsLength} Fields`;
 });
