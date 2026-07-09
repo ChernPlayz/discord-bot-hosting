@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Current Weather{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="/css/weather.css">
+  <script src="/js/weather.js" defer></script>
+{% endblock %}
+
+{% block main %}
+  <div class="container">
+    <div class="cityInput">
+      <h1>Enter city: </h1>
+      <input type="text" id="cityInput" placeholder="Kuala Lumpur" maxlength="100">
+    </div>
+    
+    <div class="currentWeatherContainer">
+      <h2 id="currentWeatherDate">Thursday, May 28</h2>
+      <h1 id="currentWeatherUTCTime">UTC time: 00:00:00 AM GMT+0</h1>
+      <h1 id="currentWeatherLocalTime">Local time: 00:00:00 AM GMT+8</h1>
+      <h2 id="currentWeatherLocation">Kuala Lumpur, MY</h2>
+      <img id="currentWeatherIcon" src="https://chernplayz.github.io/discord-bot-hosting/website/Images/WeatherIcons/rainyCloud.png" alt="Rainy Weather">
+      <h1 id="currentWeatherTemp">27°C</h1>
+      <h2 id="currentWeatherStatus">Partially cloudy</h2>
+    </div>
+
+    <div class="forecastContainer">
+      <div class="hourlyForecastContainer">
+        <h3>Hourly Forecast</h3>
+
+        <div class="hourlyTemplateContainer">
+
+        </div>
+      </div>
+
+      <div class="tenDayForecastContainer">
+        <h3>10 Day Forecast</h3>
+
+        <div class="tenDayTemplateContainer">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

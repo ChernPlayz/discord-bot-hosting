@@ -1,0 +1,108 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root{
+  /* THEME */
+  --primary-color: #ff7e5f;
+  --primary-dark: #eb5e41;
+  --primary-light: #ffb199;
+  --secondary-color: #0ba360;
+
+  /* BG */
+  --bg-primary: #eee;
+  --bg-primary-light: rgba(238, 238, 238, .5);
+  --bg-secondary: #fff;
+  --navbar-bg: #99a1e3;
+  --card-bg: #f8f9fa;
+
+  /* TEXT */
+  --text-primary: #333333;
+  --text-light: #f8f9fa;
+  --text-dark: #333333;
+
+  /* ACCENTS */
+  --accent: rgba(0,0,0,.3);
+  --accent-hover: rgba(0,0,0,.5);
+
+  /* BORDERS */
+  --border-primary: 2px solid rgba(0,0,0,.2);
+  --border-light: 1px solid rgba(255,255,255,.1);
+  --border-radius: 8px;
+
+  /* SHADOWS */
+  --shadow-primary: 0 4px 6px rgba(0,0,0,.1);
+  --shadow-sm: 0 4px 6px rgba(0,0,0,.1);
+  --shadow-md: 0 10px 15px rgba(0,0,0,.1);
+  --shadow-lg: 0 20px 25px rgba(0,0,0,.15);
+
+  /* TRANSITIONS */
+  --transition: all 0.3s ease;
+}
+
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: sans-serif;
+  background-color: #333;
+}
+
+.container{
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, .2);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
+}
+
+h1{
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+a{
+  text-decoration: none;
+}
+
+#loginBtn{
+  width: 200px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--border-radius);
+  border: none;
+  background-color: var(--accent);
+  transition: var(--transition);
+  color: #fff;
+
+  img{
+    width: 40px;
+    height: 40px;
+  }
+
+  span{
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+#loginBtn:hover{
+  transform: translateY(-2px);
+  background-color: var(--accent-hover);
+}
+
+#loginBtn:active{
+  transform: translateY(0px);
+}
