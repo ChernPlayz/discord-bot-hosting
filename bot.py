@@ -62,7 +62,7 @@ async def on_member_join(member):
   await member.send(f"Welcome to {member.guild.name}, {member.mention}!")
 
 def run_flask():
-  app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+  app.run(host="0.0.0.0", port=5000, debug=True)
 
 if __name__ == "__main__":
   flask_thread = threading.Thread(target=run_flask)

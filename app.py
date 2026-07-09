@@ -81,10 +81,19 @@ def userInfo():
   try:
     discord_session = get_discord_session(token=session["oauth_token"])
     user_data = discord_session.get(f"{API_BASE_URL}/users/@me").json()
+    
+    username = user_data.get("username")
+    user_id = user_data.get("id")
+    avatar_hash = user_data.get("avatar")
 
+    if avatar_hash:
+      avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.png?size=128"
+    else:
+      avatar_url = "https://cdn.discordapp.com/embed/avatars/0.png"
+    
     return jsonify({
-      "username": user_data.get("username"),
-      "avatar": user_data.get("avatar")
+      "username": username,
+      "avatar": avatar_url
     }), 200
   
   except Exception as err:
