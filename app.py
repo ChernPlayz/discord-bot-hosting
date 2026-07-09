@@ -4,10 +4,11 @@ from flask import Flask, request, render_template, url_for, redirect, jsonify, s
 from flask_cors import CORS
 from dotenv import load_dotenv
 from requests_oauthlib import OAuth2Session
-from bot import bot
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path='/')
 CORS(app)
+
+bot = app.config.get("DISCORD_BOT")
 
 # Env
 load_dotenv()
