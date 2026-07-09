@@ -1,5 +1,6 @@
 import discord
 import os
+import asyncio
 from flask import Flask, request, render_template, url_for, redirect, jsonify, session, current_app
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -203,7 +204,7 @@ def get_channels(guild_id):
     return jsonify({"error": f"Failed to fetch channels: {err}"}), 500
 
 @app.route('/api/send_embed', methods=['POST'])
-async def send_embed():
+def send_embed():
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
 
@@ -260,7 +261,12 @@ async def send_embed():
   
   try:
     channel = bot.get_channel(int(channel_id))
-    await channel.send(content=data["embed_text_send"] or None, embed=embed)
+
+    future = asyncio.run_coroutine_threadsafe(
+      channel.send(content=data["embed_text_send"] or None, embed=embed),
+      bot.loop
+    )
+    future.result(timeout=10)
     return jsonify({"status": "success"}), 200
   
   except Exception as err:
