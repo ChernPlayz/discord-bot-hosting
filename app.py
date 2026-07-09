@@ -25,7 +25,7 @@ TOKEN_URL = f"{API_BASE_URL}/oauth2/token"
 @app.route('/')
 def index():
   if "oauth_token" in session:
-    return render_template("embeds.html")
+    return redirect(url_for('embeds'))
   return render_template("index.html")
 
 @app.route('/login')
@@ -203,7 +203,7 @@ def get_channels(guild_id):
     return jsonify({"error": f"Failed to fetch channels: {err}"}), 500
 
 @app.route('/api/send_embed', methods=['POST'])
-def send_embed():
+async def send_embed():
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
 
@@ -212,10 +212,59 @@ def send_embed():
     return jsonify({"error": "Discord bot is not ready yet!"}), 503
   
   data = request.json
-  channel_id = data.get("channel_id")
+  channel_id = data["channel_id"]
 
   if not channel_id:
-    return jsonify({"detail": "Missing channel_id parameter"}), 400
+    return jsonify({"error": "Missing Channel ID"}), 400
+  
+  # Parse hex color string to RGB
+  hex_color = data.get("color", "#000000").lstrip('#')
+  rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+  embed_color = discord.Color.from_rgb(*rgb)
+
+  # Build the Embed object
+  embed = discord.Embed(
+    title=data["title"] or None,
+    url=data["title_url"] or None,
+    description=data["description"] or None,
+    color=embed_color
+  )
+
+  author = data.get("author", {})
+  if author["icon_name"]:
+    embed.set_author(
+      name=author["icon_name"], 
+      url=author["icon_url"] or None, 
+      icon_url=author["icon_name_url"] or None
+    )
+  
+  for field in data.get("fields", []):
+    field_title = field["title"]
+    field_desc = field["desc"]
+    isInline = field["inline"]
+    
+    embed.add_field(
+      name=field_title, 
+      value=field_desc, 
+      inline=isInline
+    )
+
+  if data["image_url"]:
+    embed.set_image(url=data["image_url"])
+
+  if data["thumbnail_url"]:
+    embed.set_thumbnail(url=data["thumbnail_url"])
+
+  if data["footer"]:
+    embed.set_footer(text=data["footer"], icon_url=data["footer_icon_url"] or None)
+  
+  try:
+    channel = bot.get_channel(int(channel_id))
+    await channel.send(content=data["embed_text_send"] or None, embed=embed)
+    return jsonify({"status": "success"}), 200
+  
+  except Exception as err:
+    return jsonify({"error": f"Failed to send embed: {err}"}), 500
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5000, debug=True)

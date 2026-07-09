@@ -213,7 +213,7 @@ async function addEmbed(){
     if (fieldTitleVal !== "" || fieldDescVal !== ""){
       fieldsList.push({
         title: fieldTitleVal || "Field Title",
-        desc: fieldDescVal || "Field Content",
+        desc: fieldDescVal || "Field Description",
         inline: isInline
       });
     }
@@ -222,15 +222,15 @@ async function addEmbed(){
   // Others
   const info = {
     channel_id: embedChannelSelect.value,
-    content: embedTextSend.value || null,
+    embed_text_send: embedTextSend.value || null,
     color: colorPicker.value || "#5865f2",
     title: titleInput.value || null,
     title_url: titleURLInput.value || null,
     description: embedTextInput.value || null,
     author: {
-      name: iconNameInput.value || null,
-      url: iconNameURLInput.value || null,
-      icon_url: iconURLInput.value || null
+      icon_url: iconURLInput.value || null,
+      icon_name: iconNameInput.value || null,
+      icon_name_url: iconNameURLInput.value || null
     },
     fields: fieldsList,
     image_url: imageURLInput.value || null,
@@ -249,20 +249,18 @@ async function addEmbed(){
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(info)
     });
-
     const data = await response.json();
 
     if (response.ok){
       alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
     } else{
-      alert(`Error: ${data.detail || "Failed to send embed."}`);
+      alert(`Failed to send embed: ${data.error}`);
     }
 
   } catch (err){
-    console.error("Network error:", err);
-    alert("Could not reach your bot. Check if Render instance is active/awake.");
+    console.error("Failed to add embed:", err);
 
   } finally{
     addEmbedBtn.innerText = "Add Embed";
