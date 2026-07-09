@@ -1,9 +1,11 @@
 import discord
 import os
 import logging
+import threading
 from discord.ext import commands
 from dotenv import load_dotenv
 from database import Database
+from app import app
 
 load_dotenv()
 discord_token = os.getenv("DISCORD_TOKEN")
@@ -59,4 +61,13 @@ async def on_ready():
 async def on_member_join(member):
   await member.send(f"Welcome to {member.guild.name}, {member.mention}!")
 
-bot.run(token=discord_token, log_handler=handler, log_level=logging.DEBUG)
+def run_flask():
+  app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+
+if __name__ == "__main__":
+  flask_thread = threading.Thread(target=run_flask)
+  flask_thread.daemon = True
+  flask_thread.start()
+  print("Flask server started!")
+
+  bot.run(token=discord_token, log_handler=handler, log_level=logging.DEBUG)
