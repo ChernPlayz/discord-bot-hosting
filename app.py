@@ -4,6 +4,7 @@ from flask import Flask, request, render_template, url_for, redirect, jsonify, s
 from flask_cors import CORS
 from dotenv import load_dotenv
 from requests_oauthlib import OAuth2Session
+from bot import bot
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path='/')
 CORS(app)
@@ -73,8 +74,8 @@ def discordAuth():
     return f"Error exchanging code for credentials: {err}", 500
 
 # User Data
-@app.route('/api/userinfo', methods=['GET'])
-def userInfo():
+@app.route('/api/user_data', methods=['GET'])
+def get_user_data():
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
   
@@ -100,7 +101,87 @@ def currentWeather():
   return render_template("currentWeather.html")
 
 # Embeds
+@app.route('/api/guilds', methods=['GET'])
+def get_guilds():
+  if "oauth_token" not in session:
+    return jsonify({"error": "Unauthorized: Please log in first!"}), 401
+  
+  if bot is None or not bot.is_ready():
+    return jsonify({"error": "Discord bot is not ready yet!"}), 503
 
+  try:
+    discord_session = get_discord_session(token=session["oauth_token"])
+    guilds_data = discord_session.get(f"{API_BASE_URL}/users/@me/guilds").json()
+
+    admin_guild_ids = []
+    for guild in guilds_data:
+      is_owner = guild.get("owner", False)
+      user_perms = int(guild.get("permissions", 0))
+      is_admin = (user_perms & 0x8) == 0x8 # bitwise operator &, admin at 0000 1000 or 0x8
+      
+      if is_owner or is_admin:
+        admin_guild_ids.append(guild["id"])
+
+    guilds_list = []
+    for guild in bot.guilds:
+      if str(guild.id) in admin_guild_ids:
+        has_channels = any(
+          isinstance(channel, discord.TextChannel) and channel.permissions_for(guild.me).send_messages 
+          for channel in guild.channels
+        )
+        if has_channels:
+          guilds_list.append({
+            "id": str(guild.id),
+            "name": guild.name
+          })
+
+    return jsonify(guilds_list)
+
+  except Exception as err:
+    return jsonify({"error": f"Failed to fetch guilds: {err}"}), 500
+
+@app.route('/api/channels/<int:guild_id>', methods=['GET'])
+def get_channels(guild_id):
+  if "oauth_token" not in session:
+    return jsonify({"error": "Unauthorized: Please log in first!"}), 401
+
+  if bot is None or not bot.is_ready():
+    return jsonify({"error": "Discord bot is not ready yet!"}), 503
+  
+  try:
+    guild = bot.get_guild(guild_id)
+    if not guild:
+      return jsonify({"error": "Guild not found"}), 500
+
+    channels_list = []
+    for channel in guild.channels:
+      if isinstance(channel, discord.TextChannel):
+        permissions = channel.permissions_for(guild.me)
+        if permissions.view_channel and permissions.send_messages:
+          channels_list.append({
+            "id": str(channel.id),
+            "name": channel.name
+          })
+                
+    return jsonify(channels_list)
+
+  except Exception as err:
+    return jsonify({"error": f"Failed to fetch channels: {err}"}), 500
+
+@app.route('/api/send_embed', methods=['POST'])
+def send_embed():
+  if "oauth_token" not in session:
+    return jsonify({"error": "Unauthorized: Please log in first!"}), 401
+
+  if bot is None or not bot.is_ready():
+    return jsonify({"error": "Discord bot is not ready yet!"}), 503
+  
+  data = request.json
+  channel_id = data.get("channel_id")
+
+  if not channel_id:
+    return jsonify({"detail": "Missing channel_id parameter"}), 400
+  
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5000, debug=True)

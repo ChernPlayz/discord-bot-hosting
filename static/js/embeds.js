@@ -245,7 +245,7 @@ async function addEmbed(){
   addEmbedBtn.disabled = true;
 
   try{
-    const response = await fetch(`${BACKEND_URL}/api/send-embed`, {
+    const response = await fetch(`${BACKEND_URL}/api/send_embed`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

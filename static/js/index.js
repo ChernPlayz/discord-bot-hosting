@@ -71,7 +71,7 @@ function closeAllSubMenus(){
 
 async function loadUserInfo(){
   try{
-    const response = await fetch(`${BACKEND_URL}/api/userinfo`);
+    const response = await fetch(`${BACKEND_URL}/api/user_data`);
     if (!response.ok) throw new Error("User unauthorized or API failed");
     const userData = await response.json();
     
