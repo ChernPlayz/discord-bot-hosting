@@ -93,7 +93,7 @@ def get_user_data():
     
     return jsonify({
       "username": username,
-      "avatar": avatar_url
+      "avatar_url": avatar_url
     }), 200
   
   except Exception as err:

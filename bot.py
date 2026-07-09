@@ -67,8 +67,7 @@ def run_flask():
 if __name__ == "__main__":
   app.config["DISCORD_BOT"] = bot
   
-  flask_thread = threading.Thread(target=run_flask)
-  flask_thread.daemon = True
+  flask_thread = threading.Thread(target=run_flask, daemon=True)
   flask_thread.start()
   print("Flask server started!")
 

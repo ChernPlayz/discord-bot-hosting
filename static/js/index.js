@@ -30,23 +30,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentPath = window.location.pathname;
   
   liBtns.forEach(liBtn => {
-    liBtn.addEventListener("click", () => {
-      const link = liBtn.querySelector("a")
-      const hrefPath = new URL(link.href, window.location.origin).pathname;
+    const link = liBtn.querySelector("a");
+    if (!link) return;
 
-      if (currentPath === hrefPath){
-        liBtn.classList.add("active");
+    const hrefPath = new URL(link.href, window.location.origin).pathname;
 
-        const subMenu = liBtn.parentElement.parentElement;
-        if (subMenu && subMenu.classList.contains("sub-menu")){
-          subMenu.classList.add("show");
-          const dropdownBtn = subMenu.previousElementSibling;
-          if (dropdownBtn){
-            dropdownBtn.classList.add("rotate");
-          }
+    if (currentPath === hrefPath){
+      liBtn.classList.add("active");
+
+      const subMenu = liBtn.closest(".sub-menu");
+      if (subMenu){
+        subMenu.classList.add("show");
+
+        const dropdownBtn = subMenu.previousElementSibling;
+        if (dropdownBtn){
+          dropdownBtn.classList.add("rotate");
         }
       }
-    })
+    }
   });
 });
 
