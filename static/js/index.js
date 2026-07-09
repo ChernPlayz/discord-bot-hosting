@@ -14,7 +14,7 @@ const BACKEND_URL = "https://discord-bot-hosting-vft8.onrender.com";
 document.addEventListener("DOMContentLoaded", () => {
   loadUserInfo();
 
-  // Light / Dark Mode
+  /* Light / Dark Mode */
   const currentTheme = localStorage.getItem("theme") || "light";
   html.setAttribute("data-theme", currentTheme);
   toggleModeBtn.innerHTML = currentTheme === "light" ? `
@@ -26,29 +26,39 @@ document.addEventListener("DOMContentLoaded", () => {
   <span>Light</span>
   `;
 
-  // Sidebar Active
+  /* Sidebar Active */
   const currentPath = window.location.pathname;
-  
+
+  // Reset
   liBtns.forEach(liBtn => {
-    const link = liBtn.querySelector("a");
-    if (!link) return;
+    liBtn.classList.remove("active");
 
-    const hrefPath = new URL(link.href, window.location.origin).pathname;
-
-    if (currentPath === hrefPath){
-      liBtn.classList.add("active");
-
-      const subMenu = liBtn.closest(".sub-menu");
-      if (subMenu){
-        subMenu.classList.add("show");
-
-        const dropdownBtn = subMenu.previousElementSibling;
-        if (dropdownBtn){
-          dropdownBtn.classList.add("rotate");
-        }
-      }
+    const subMenu = liBtn.closest(".sub-menu");
+    if (subMenu){
+      subMenu.classList.remove("show");
+      const dropdownBtn = subMenu.previousElementSibling;
+      if (dropdownBtn) dropdownBtn.classList.remove("rotate");
     }
   });
+
+  const matchedLink = Array.from(liBtns).find(liBtn => {
+    const linkEl = liBtn.querySelector("a");
+    if (!linkEl) return;
+    const hrefPath = new URL(linkEl.href, window.location.origin).pathname;
+    return currentPath === hrefPath
+  });
+
+  if (matchedLink){
+    matchedLink.classList.add("active");
+
+    const subMenu = matchedLink.closest(".sub-menu");
+    if (subMenu){
+      subMenu.classList.add("show");
+
+      const dropdownBtn = subMenu.previousElementSibling;
+      if (dropdownBtn) dropdownBtn.classList.add("rotate");
+    }
+  }
 });
 
 /* Main Functions */

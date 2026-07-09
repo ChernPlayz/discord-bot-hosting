@@ -108,6 +108,30 @@ def embeds():
 def currentWeather():
   return render_template("currentWeather.html")
 
+@app.route('/hourlyWeather')
+def hourlyWeather():
+  return render_template("hourlyWeather.html")
+
+@app.route('/dailyWeather')
+def dailyWeather():
+  return render_template("dailyWeather.html")
+
+@app.route('/polls')
+def polls():
+  return render_template("polls.html")
+
+@app.route('/reactionRoles')
+def reactionRoles():
+  return render_template("reactionRoles.html")
+
+@app.route('/moderation')
+def moderation():
+  return render_template("moderation.html")
+
+@app.route('/logs')
+def logs():
+  return render_template("logs.html")
+
 # Embeds
 @app.route('/api/guilds', methods=['GET'])
 def get_guilds():
