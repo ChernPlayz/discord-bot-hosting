@@ -1,14 +1,12 @@
 import discord
 import os
-from flask import Flask, request, render_template, url_for, redirect, jsonify, session
+from flask import Flask, request, render_template, url_for, redirect, jsonify, session, current_app
 from flask_cors import CORS
 from dotenv import load_dotenv
 from requests_oauthlib import OAuth2Session
 
 app = Flask(__name__, template_folder="templates", static_folder="static", static_url_path='/')
 CORS(app)
-
-bot = app.config.get("DISCORD_BOT")
 
 # Env
 load_dotenv()
@@ -36,7 +34,7 @@ def login():
     f"https://discord.com/oauth2/authorize"
     f"?client_id={CLIENT_ID}"
     f"&response_type=code"
-    f"&redirect_uri=https%3A%2F%2Fdiscord-bot-hosting-vft8.onrender.com%2Fauth%2Fdiscord"
+    f"&redirect_uri={REDIRECT_URI}"
     f"&scope=identify%20guilds"
   )
 
@@ -116,6 +114,7 @@ def get_guilds():
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
   
+  bot = current_app.config.get("DISCORD_BOT")
   if bot is None or not bot.is_ready():
     return jsonify({"error": "Discord bot is not ready yet!"}), 503
 
@@ -155,6 +154,7 @@ def get_channels(guild_id):
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
 
+  bot = current_app.config.get("DISCORD_BOT")
   if bot is None or not bot.is_ready():
     return jsonify({"error": "Discord bot is not ready yet!"}), 503
   
@@ -183,6 +183,7 @@ def send_embed():
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
 
+  bot = current_app.config.get("DISCORD_BOT")
   if bot is None or not bot.is_ready():
     return jsonify({"error": "Discord bot is not ready yet!"}), 503
   
