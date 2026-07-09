@@ -33,7 +33,7 @@ class MyBot(commands.Bot):
       await self.close()
       return
 
-    for fileName in os.listdir("Discord Bot Test/cogs"):
+    for fileName in os.listdir("cogs"):
       if fileName.endswith(".py"):
         try:
           await self.load_extension(f"cogs.{fileName[:-3]}")
