@@ -192,7 +192,7 @@ addEmbedBtn.addEventListener("click", addEmbed);
 
 async function addEmbed(){
   if (!embedChannelSelect.value){
-    alert("Please select a destination channel first!");
+    alert("Please select a channel first!");
     return;
   }
 
@@ -219,7 +219,27 @@ async function addEmbed(){
     }
   })
 
-  // Others
+  // Check Blank
+  const isFormCompletelyBlank = 
+    !embedTextSend.value.trim() &&
+    !titleInput.value.trim() &&
+    !titleURLInput.value.trim() &&
+    !embedTextInput.value.trim() &&
+    !iconURLInput.value.trim() &&
+    !iconNameInput.value.trim() &&
+    !iconNameURLInput.value.trim() &&
+    !imageURLInput.value.trim() &&
+    !thumbnailURLInput.value.trim() &&
+    !footerInput.value.trim() &&
+    !footerIconURLInput.value.trim() &&
+    fieldsList.length === 0;
+
+  if (isFormCompletelyBlank){
+    alert("You cannot send an empty embed! Please fill out at least one field.");
+    return;
+  }
+
+  // Send Info
   const info = {
     channel_id: embedChannelSelect.value,
     embed_text_send: embedTextSend.value || null,
@@ -255,6 +275,22 @@ async function addEmbed(){
 
     if (response.ok){
       alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
+      
+      // Reset Input
+      embedTextSend.value = "";
+      colorPicker.value = "#5865f2";
+      titleInput.value = "";
+      titleURLInput.value = "";
+      embedTextInput.value = "";
+      iconURLInput.value = "";
+      iconNameInput.value = "";
+      iconNameURLInput.value = "";
+      imageURLInput.value = "";
+      thumbnailURLInput.value = "";
+      footerInput.value = "";
+      footerIconURLInput.value = "";
+      fieldsContainer.innerHTML = "";
+
     } else{
       alert(`Failed to send embed: ${data.error}`);
     }
