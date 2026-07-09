@@ -8,10 +8,13 @@ const liBtns = document.querySelectorAll(".li-btn")
 const html = document.documentElement;
 
 /* URL & API */
-const BACKEND_URL = "https://discord-bot-hosting-vft8.onrender.com/";
+const BACKEND_URL = "https://discord-bot-hosting-vft8.onrender.com";
 
 /* DOM Content Loaded */
 document.addEventListener("DOMContentLoaded", () => {
+  loadUserInfo();
+
+  // Light / Dark Mode
   const currentTheme = localStorage.getItem("theme") || "light";
   html.setAttribute("data-theme", currentTheme);
   toggleModeBtn.innerHTML = currentTheme === "light" ? `
@@ -23,7 +26,28 @@ document.addEventListener("DOMContentLoaded", () => {
   <span>Light</span>
   `;
 
-  loadUserInfo();
+  // Sidebar Active
+  const currentPath = window.location.pathname;
+  
+  liBtns.forEach(liBtn => {
+    liBtn.addEventListener("click", () => {
+      const link = liBtn.querySelector("a")
+      const hrefPath = new URL(link.href, window.location.origin).pathname;
+
+      if (currentPath === hrefPath){
+        liBtn.classList.add("active");
+
+        const subMenu = liBtn.parentElement.parentElement;
+        if (subMenu && subMenu.classList.contains("sub-menu")){
+          subMenu.classList.add("show");
+          const dropdownBtn = subMenu.previousElementSibling;
+          if (dropdownBtn){
+            dropdownBtn.classList.add("rotate");
+          }
+        }
+      }
+    })
+  });
 });
 
 /* Main Functions */
@@ -71,21 +95,6 @@ function closeAllSubMenus(){
     dropdownBtn.classList.remove("rotate");
   })
 }
-
-liBtns.forEach(liBtn => {
-  liBtn.addEventListener("click", () => {
-    const currentActive = document.querySelector(".li-btn.active");
-    if (currentActive){
-      currentActive.classList.remove("active");
-    }
-    liBtn.classList.add("active");
-    
-    if (this.parentElement.parentElement.classList.contains("sub-menu")){
-      this.parentElement.parentElement.classList.add("show");
-      this.parentElement.parentElement.previousElementSibling.classList.add("rotate");
-    }
-  })
-});
 
 async function loadUserInfo(){
   try{
