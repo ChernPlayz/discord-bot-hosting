@@ -98,7 +98,7 @@ input:focus{
   height: 150px;
 }
 
-#embed-builder form{
+#embed-builder .embed-input-container{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-auto-rows: min-content;
@@ -129,7 +129,7 @@ input:focus{
 .footer-area {grid-area: footer-area;}
 #footer-icon-url {grid-area: footer-icon-url;}
 
-#embed-builder form .word-count-container{
+#embed-builder .embed-input-container .word-count-container{
   display: flex;
   flex-direction: column;
   position: relative;
