@@ -303,8 +303,11 @@ function initialiseField(field){
 // Add Embed
 addEmbedBtn.addEventListener("click", addEmbed);
 
+let isEditing = false;
+let currentEditingTarget = {messageID: null, channelID: null};
+
 async function addEmbed(){
-  if (!embedChannelSelect.value){
+  if (!isEditing && !embedChannelSelect.value){
     alert("Please select a channel first!");
     return;
   }
@@ -354,7 +357,6 @@ async function addEmbed(){
 
   // Send Info
   const info = {
-    channel_id: embedChannelSelect.value,
     embed_text_send: embedTextSend.value || null,
     color: colorPicker.value || resettedColor,
     title: titleInput.value || null,
@@ -372,12 +374,22 @@ async function addEmbed(){
     footer_icon_url: footerIconURLInput.value || null
   }
 
+  let targetURL = `${BACKEND_URL}/api/send_embed`;
+  
+  if (isEditing) {
+    targetURL = `${BACKEND_URL}/api/edit_embed`;
+    info.message_id = currentEditingTarget.messageID;
+    info.channel_id = currentEditingTarget.channelID;
+  } else {
+    info.channel_id = embedChannelSelect.value;
+  }
+
   /* SENDING */
-  addEmbedBtn.textContent = "Sending...";
+  addEmbedBtn.textContent = isEditing ? "Updating..." : "Sending...";
   addEmbedBtn.disabled = true;
 
   try{
-    const response = await fetch(`${BACKEND_URL}/api/send_embed`, {
+    const response = await fetch(targetURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -387,18 +399,24 @@ async function addEmbed(){
     const data = await response.json();
 
     if (response.ok){
-      alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
+      if (isEditing){
+        alert("Embed updated successfully!")
+      } else {
+        alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
+      }
+
       resetInputs();
+      embedMsgLinkInput.value = "";
 
     } else{
       alert(`Failed to send embed: ${data.error}`);
     }
 
   } catch (err){
-    console.error("Failed to add embed:", err);
+    console.error(`Failed to ${isEditing ? "edit" : "add"} embed:`, err);
 
   } finally{
-    addEmbedBtn.innerText = "Add Embed";
+    addEmbedBtn.innerText = isEditing ? "Edit Embed" : "Add Embed";
     addEmbedBtn.disabled = false;
   }
 }
@@ -491,6 +509,8 @@ function updatePreviewField(){
 
 // Edit Embed
 createEmbedBtn.addEventListener("click", () => {
+  isEditing = false;
+  currentEditingTarget = {messageID: null, channelID: null};
   createEmbedContainer.style.display = "block";
   editEmbedContainer.style.display = "none";
   destinationContainer.style.display = "flex";
@@ -498,6 +518,7 @@ createEmbedBtn.addEventListener("click", () => {
 });
 
 editEmbedBtn.addEventListener("click", () => {
+  isEditing = true;
   editEmbedContainer.style.display = "flex";
   createEmbedContainer.style.display = "none";
   destinationContainer.style.display = "none";
@@ -544,6 +565,8 @@ function checkLinkInput(linkInput){
       messageID = match[3];
     }
 
+    currentEditingTarget = {messageID, channelID};
+
     statusMsg.textContent = "Loading...";
     styleMsgStatus("success");
 
@@ -558,7 +581,7 @@ function checkLinkInput(linkInput){
 
 async function fetchEmbedData(messageID, channelID){
   try{
-    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelID}`);
+    const response = await fetch(`${BACKEND_URL}/api/get_embed_data?message_id=${messageID}&channel_id=${channelID}`);
     const embedData = await response.json();
 
     if (!response.ok){
@@ -581,7 +604,6 @@ async function fetchEmbedData(messageID, channelID){
 }
 
 function autoFillEmbed(embedData){
-  console.log(embedData);
   // Inputs
   embedTextSend.value = embedData.embed_text_send || "";
   colorPicker.value = embedData.color || resettedColor;
@@ -644,6 +666,6 @@ function autoFillEmbed(embedData){
   [embedTextSend, titleInput, titleURLInput, embedTextInput, iconURLInput, iconNameInput, iconNameURLInput, imageURLInput, thumbnailURLInput, footerInput, footerIconURLInput].forEach(inputElement => {
     inputElement.dispatchEvent(new Event("input"));
   });
-  
+
   updatePreviewField();
 }

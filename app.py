@@ -272,8 +272,8 @@ def send_embed():
   except Exception as err:
     return jsonify({"error": f"Failed to send embed: {err}"}), 500
 
-@app.route('/api/edit_embed', methods=['GET'])
-def edit_embed():
+@app.route('/api/get_embed_data', methods=['GET'])
+def get_embed_data():
   if "oauth_token" not in session:
     return jsonify({"error": "Unauthorized: Please log in first!"}), 401
 
@@ -342,5 +342,83 @@ def edit_embed():
   except Exception as err:
     return jsonify({"error": f"Failed to get embed data: {err}"}), 500
 
+@app.route('/api/edit_embed', methods=['POST'])
+def edit_embed():
+  if "oauth_token" not in session:
+    return jsonify({"error": "Unauthorized: Please log in first!"}), 401
+
+  bot = current_app.config.get("DISCORD_BOT")
+  if bot is None or not bot.is_ready():
+    return jsonify({"error": "Discord bot is not ready yet!"}), 503
+  
+  data = request.json
+  channel_id = data["channel_id"]
+  message_id = data["message_id"]
+
+  if not channel_id or not message_id:
+    return jsonify({"error": "Missing Channel ID or Message ID"}), 400
+  
+  channel = bot.get_channel(int(channel_id))
+  if not channel:
+    return jsonify({"error": "Bot cannot find channel"}), 404
+  
+  try:
+    coro_msg = channel.fetch_message(int(message_id))
+    message = asyncio.run_coroutine_threadsafe(coro_msg, bot.loop).result()
+  except discord.NotFound:
+    return jsonify({"error": "The specified message could not be found."}), 404
+  except discord.Forbidden:
+    return jsonify({"error": "The bot lacks permissions to read this message."}), 403
+  except Exception as err:  
+    return jsonify({"error": f"Failed to retrieve message: {err}"}), 500
+
+  # Parse hex color string to RGB
+  hex_color = data.get("color", "#000000").lstrip('#')
+  rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+  embed_color = discord.Color.from_rgb(*rgb)
+
+  # Build the Embed object
+  embed = discord.Embed(
+    title=data["title"] or None,
+    url=data["title_url"] or None,
+    description=data["description"] or None,
+    color=embed_color
+  )
+
+  author = data.get("author", {})
+  if author["icon_name"]:
+    embed.set_author(
+      name=author["icon_name"], 
+      url=author["icon_url"] or None, 
+      icon_url=author["icon_name_url"] or None
+    )
+  
+  for field in data.get("fields", []):
+    field_title = field["title"]
+    field_desc = field["desc"]
+    isInline = field["inline"]
+    
+    embed.add_field(
+      name=field_title, 
+      value=field_desc, 
+      inline=isInline
+    )
+
+  if data["image_url"]:
+    embed.set_image(url=data["image_url"])
+
+  if data["thumbnail_url"]:
+    embed.set_thumbnail(url=data["thumbnail_url"])
+
+  if data["footer"]:
+    embed.set_footer(text=data["footer"], icon_url=data["footer_icon_url"] or None)
+  
+  try:
+    coro_edit = message.edit(content=data.get("embed_text_send"), embed=embed)
+    asyncio.run_coroutine_threadsafe(coro_edit, bot.loop).result()
+    return jsonify({"success": True, "message": "Embed updated successfully!"}), 200
+  except Exception as err:
+    return jsonify({"error": f"Failed to update embed: {err}"}), 500
+  
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5000, debug=True)
