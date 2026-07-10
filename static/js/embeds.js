@@ -406,7 +406,8 @@ async function addEmbed(){
 // Embed Preview
 function syncText(inputElement, previewElement){
   if (!inputElement || !previewElement) return;
-  previewElement.textContent = "";
+  const value = inputElement.value.trim();
+  previewElement.textContent = value;
 
   inputElement.addEventListener("input", () => {
     const value = inputElement.value.trim();
@@ -422,7 +423,8 @@ function syncText(inputElement, previewElement){
 
 function syncTextURL(inputElement, previewElement){
   if (!inputElement || !previewElement) return;
-  previewElement.href = "#";
+  const value = inputElement.value.trim();
+  previewElement.href = value;
 
   inputElement.addEventListener("input", () => {
     const value = inputElement.value.trim();
@@ -441,7 +443,8 @@ function syncTextURL(inputElement, previewElement){
 
 function syncImage(inputElement, imgElement){
   if (!inputElement || !imgElement) return;
-  imgElement.src = "";
+  const url = inputElement.value.trim();
+  imgElement.src = url;
 
   inputElement.addEventListener("input", () => {
     const url = inputElement.value.trim();
