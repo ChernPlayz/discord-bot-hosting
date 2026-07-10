@@ -525,9 +525,9 @@ async function fetchEmbedData(linkInput){
     const discordLinkRegex = /channels\/(\d+)\/(\d+)\/(\d+)/;
     const match = linkInput.match(discordLinkRegex);
 
-    let guildID = None;
-    let channelID = None;
-    let messageID = None;
+    let guildID = null;
+    let channelID = null;
+    let messageID = null;
     
     if (match){
       guildID = match[1];
@@ -535,24 +535,27 @@ async function fetchEmbedData(linkInput){
       messageID = match[3];
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelId}`);
+    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelID}`);
     const embedData = await response.json();
 
     if (!response.ok){
-      errIDMsg.textContent = "Invalid ID";
-      errIDMsg.style.display = "block";
+      errLinkMsg.textContent = "Invalid Link";
+      errLinkMsg.style.display = "block";
       createEmbedContainer.style.display = "none";
       throw new Error(embedData.error);
     }
 
-    errIDMsg.textContent = "";
-    errIDMsg.style.display = "none";
+    errLinkMsg.textContent = "";
+    errLinkMsg.style.display = "none";
     createEmbedContainer.style.display = "block";
 
     autoFillEmbed(embedData);
 
   } catch (err){
     console.error(`Failed to fetch embed data: ${err}`);
+    errLinkMsg.textContent = "Invalid Link";
+    errLinkMsg.style.display = "block";
+    createEmbedContainer.style.display = "none";
   }
 }
 
