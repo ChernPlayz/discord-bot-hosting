@@ -4,7 +4,7 @@ const createEmbedBtn = document.getElementById("create-embed-btn");
 const editEmbedBtn = document.getElementById("edit-embed-btn");
 const editEmbedContainer = document.querySelector(".edit-embed-container");
 const embedMsgLinkInput = document.getElementById("embed-msg-link-input");
-const errLinkMsg = document.getElementById("err-link-msg");
+const statusMsg = document.getElementById("status-msg");
 const createEmbedContainer = document.querySelector(".create-embed-container");
 const embedTextSend = document.getElementById("embed-text-send");
 const colorPicker = document.getElementById("color-picker");
@@ -406,8 +406,6 @@ async function addEmbed(){
 // Embed Preview
 function syncText(inputElement, previewElement){
   if (!inputElement || !previewElement) return;
-  const value = inputElement.value.trim();
-  previewElement.textContent = value;
 
   inputElement.addEventListener("input", () => {
     const value = inputElement.value.trim();
@@ -423,8 +421,6 @@ function syncText(inputElement, previewElement){
 
 function syncTextURL(inputElement, previewElement){
   if (!inputElement || !previewElement) return;
-  const value = inputElement.value.trim();
-  previewElement.href = value;
 
   inputElement.addEventListener("input", () => {
     const value = inputElement.value.trim();
@@ -443,8 +439,6 @@ function syncTextURL(inputElement, previewElement){
 
 function syncImage(inputElement, imgElement){
   if (!inputElement || !imgElement) return;
-  const url = inputElement.value.trim();
-  imgElement.src = url;
 
   inputElement.addEventListener("input", () => {
     const url = inputElement.value.trim();
@@ -514,7 +508,7 @@ embedMsgLinkInput.addEventListener("input", () => {
   const linkInput = embedMsgLinkInput.value.trim();
   if (!linkInput) return;
 
-  fetchEmbedData(linkInput)
+  checkLinkInput(linkInput);
 })
 
 embedMsgLinkInput.addEventListener("keydown", (e) => {
@@ -524,11 +518,18 @@ embedMsgLinkInput.addEventListener("keydown", (e) => {
     const linkInput = e.target.value.trim();
     if (!linkInput) return;
 
-    fetchEmbedData(linkInput);
+    checkLinkInput(linkInput);
   }
 });
 
-async function fetchEmbedData(linkInput){
+function styleMsgStatus(status){
+  if (status === "error") statusMsg.style.color = "#ff4b4b";
+  else if (status === "success") statusMsg.style.color = "#018f01";
+  statusMsg.style.display = "block";
+  createEmbedContainer.style.display = "none";
+}
+
+function checkLinkInput(linkInput){
   try{
     const discordLinkRegex = /channels\/(\d+)\/(\d+)\/(\d+)/;
     const match = linkInput.match(discordLinkRegex);
@@ -543,27 +544,39 @@ async function fetchEmbedData(linkInput){
       messageID = match[3];
     }
 
+    statusMsg.textContent = "Loading...";
+    styleMsgStatus("success");
+
+    fetchEmbedData(messageID, channelID);
+
+  } catch (err){
+    console.error(`Failed to match link input: ${err}`);
+    statusMsg.textContent = "Invalid Link";
+    styleMsgStatus("error");
+  }
+}
+
+async function fetchEmbedData(messageID, channelID){
+  try{
     const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelID}`);
     const embedData = await response.json();
 
     if (!response.ok){
-      errLinkMsg.textContent = "Invalid Link";
-      errLinkMsg.style.display = "block";
-      createEmbedContainer.style.display = "none";
+      statusMsg.textContent = "Error";
+      styleMsgStatus("error");
       throw new Error(embedData.error);
     }
 
-    errLinkMsg.textContent = "";
-    errLinkMsg.style.display = "none";
+    statusMsg.textContent = "";
+    statusMsg.style.display = "none";
     createEmbedContainer.style.display = "block";
 
     autoFillEmbed(embedData);
 
   } catch (err){
     console.error(`Failed to fetch embed data: ${err}`);
-    errLinkMsg.textContent = "Invalid Link";
-    errLinkMsg.style.display = "block";
-    createEmbedContainer.style.display = "none";
+    statusMsg.textContent = "Error";
+    styleMsgStatus("error");
   }
 }
 
@@ -571,7 +584,8 @@ function autoFillEmbed(embedData){
   console.log(embedData);
   // Inputs
   embedTextSend.value = embedData.embed_text_send || "";
-  colorPicker.value = embedData.color || "#5865f2";
+  colorPicker.value = embedData.color || resettedColor;
+  colorVal.value = colorPicker.value || resettedColor;
 
   if (embedData.author){
     iconURLInput.value = embedData.author.icon_url || "";
@@ -625,18 +639,11 @@ function autoFillEmbed(embedData){
   });
 
   // Embed Preview Clone
-  syncText(iconNameInput, previewIconName);
-  syncText(titleInput, previewTitle);
-  syncText(embedTextInput, previewDesc);
-  syncText(footerInput, previewFooter);
+  previewBG.style.backgroundColor = colorPicker.value;
 
-  syncTextURL(iconNameURLInput, previewIconNameURL);
-  syncTextURL(titleURLInput, previewTitleURL);
-
-  syncImage(imageURLInput, previewImage);
-  syncImage(thumbnailURLInput, previewThumbnail);
-  syncImage(iconURLInput, previewIcon);
-  syncImage(footerIconURLInput, previewFooterIcon);
-
+  [embedTextSend, titleInput, titleURLInput, embedTextInput, iconURLInput, iconNameInput, iconNameURLInput, imageURLInput, thumbnailURLInput, footerInput, footerIconURLInput].forEach(inputElement => {
+    inputElement.dispatchEvent(new Event("input"));
+  });
+  
   updatePreviewField();
 }

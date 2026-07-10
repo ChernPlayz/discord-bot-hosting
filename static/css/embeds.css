@@ -440,9 +440,8 @@ a:hover{
   min-width: 150px;
 }
 
-#err-link-msg{
+#status-msg{
   display: none;
-  color: #ff4b4b;
   font-size: 14px;
   font-weight: 500;
 }
