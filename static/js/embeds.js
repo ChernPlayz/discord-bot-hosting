@@ -337,8 +337,17 @@ async function addEmbed(){
       footerInput.value = "";
       footerIconURLInput.value = "";
       fieldsContainer.innerHTML = "";
-      fieldCount.textContent = `0/${maxFieldsLength} Fields`
-      [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => wordCounter(input));
+      fieldCount.textContent = `0/${maxFieldsLength} Fields`;
+      [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => {
+        input.value = ""
+        const container = input.closest(".word-count-container");
+        if (container){
+          const counterSpan = container.querySelector("#current");
+          if (counterSpan){
+            counterSpan.textContent = "0";
+          }
+        }
+      });
       
       // Embed Preview
       previewBG.style.backgroundColor = "#5865f2";
