@@ -341,20 +341,25 @@ async function addEmbed(){
       [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => wordCounter(input));
       
       // Embed Preview
-      syncText(iconNameInput, previewIconName);
-      syncText(titleInput, previewTitle);
-      syncText(embedTextInput, previewDesc);
-      syncText(footerInput, previewFooter);
+      previewBG.style.backgroundColor = "#5865f2";
 
-      syncTextURL(iconNameURLInput, previewIconNameURL);
-      syncTextURL(titleURLInput, previewTitleURL);
+      [previewIconName, previewTitle, previewDesc, previewFooter].forEach(input => {
+        input.style.display = "none";
+        input.textContent = "";
+      });
 
-      syncImage(imageURLInput, previewImage);
-      syncImage(thumbnailURLInput, previewThumbnail);
-      syncImage(iconURLInput, previewIcon);
-      syncImage(footerIconURLInput, previewFooterIcon);
+      [previewIconNameURL, previewTitleURL].forEach(input => {
+        input.href = "#";
+        input.style.color = "#fff";
+        input.classList.add("disabled-link");
+      });
 
-      updatePreviewField();
+      [previewImage, previewThumbnail, previewIcon, previewFooterIcon].forEach(input => {
+        input.style.display = "none";
+        input.src = "";
+      });
+
+      previewFieldsContainer.innerHTML = "";
 
     } else{
       alert(`Failed to send embed: ${data.error}`);
@@ -398,7 +403,8 @@ function syncTextURL(inputElement, previewElement){
       previewElement.style.color = "#fff";
       previewElement.classList.add("disabled-link");
     } else {
-      previewElement.style.color = "#4D96EE";
+      if (previewElement === previewIconNameURL) previewElement.style.color = "#fff";
+      else if (previewElement === previewTitleURL) previewElement.style.color = "#4D96EE";
       previewElement.classList.remove("disabled-link");
     }
   });
@@ -423,7 +429,6 @@ function updatePreviewField(){
   previewFieldsContainer.innerHTML = "";
 
   const fields = fieldsContainer.querySelectorAll(".field");
-
   fields.forEach(field => {
     const fieldTitleEl = field.querySelector(".field-title");
     const fieldDescEl = field.querySelector(".field-desc");

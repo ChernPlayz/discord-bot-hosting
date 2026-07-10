@@ -327,6 +327,7 @@ a:hover{
   height: 150px;
   border-radius: 4px;
   margin-left: auto;
+  cursor: pointer;
 }
 
 .preview-main{
@@ -403,6 +404,7 @@ a:hover{
   height: 300px;
   border-radius: 4px;
   margin: 1rem 0;
+  cursor: pointer;
 }
 
 .preview-footer{
