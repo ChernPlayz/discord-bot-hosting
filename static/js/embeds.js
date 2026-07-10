@@ -566,7 +566,7 @@ async function fetchEmbedData(linkInput){
 
 function autoFillEmbed(embedData){
   console.log(embedData);
-
+  // Inputs
   embedTextSend.value = embedData.embed_text_send || "";
   colorPicker.value = embedData.color || "#5865f2";
 
@@ -588,7 +588,6 @@ function autoFillEmbed(embedData){
 
   // Fields
   fieldsContainer.innerHTML = "";
-  
   if (embedData.fields && Array.isArray(embedData.fields)) {
     embedData.fields.forEach(field => {
       addField();
@@ -609,4 +608,32 @@ function autoFillEmbed(embedData){
       }
     });
   }
+  fieldCount.textContent = `${fieldsContainer.children.length}/${maxFieldsLength} Fields`;
+  
+  // Word Count
+  [embedTextSend, titleInput, embedTextInput, footerInput].forEach(inputElement => {
+    const container = inputElement.closest(".word-count-container");
+    if (container){
+      const counterSpan = container.querySelector("#current");
+      if (counterSpan){
+        counterSpan.textContent = inputElement.value.length;
+      }
+    }
+  });
+
+  // Embed Preview Clone
+  syncText(iconNameInput, previewIconName);
+  syncText(titleInput, previewTitle);
+  syncText(embedTextInput, previewDesc);
+  syncText(footerInput, previewFooter);
+
+  syncTextURL(iconNameURLInput, previewIconNameURL);
+  syncTextURL(titleURLInput, previewTitleURL);
+
+  syncImage(imageURLInput, previewImage);
+  syncImage(thumbnailURLInput, previewThumbnail);
+  syncImage(iconURLInput, previewIcon);
+  syncImage(footerIconURLInput, previewFooterIcon);
+
+  updatePreviewField();
 }
