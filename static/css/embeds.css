@@ -425,6 +425,28 @@ a:hover{
   }
 }
 
+/* Edit Embed */
+.edit-embed-container{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 0;
+  border-bottom: var(--border-primary);
+}
+
+#embed-msg-ID-input{
+  flex: 1;
+  min-width: 150px;
+}
+
+#err-ID-msg{
+  display: none;
+  color: #ff4b4b;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 @media (max-width: 768px){
   main{
     padding: 1rem 1rem 70px 1rem;

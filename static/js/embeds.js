@@ -2,6 +2,10 @@
 // Embed Builder
 const createEmbedBtn = document.getElementById("create-embed-btn");
 const editEmbedBtn = document.getElementById("edit-embed-btn");
+const editEmbedContainer = document.querySelector(".edit-embed-container");
+const embedMsgIDInput = document.getElementById("embed-msg-ID-input");
+const errIDMsg = document.getElementById("err-ID-msg");
+const createEmbedContainer = document.querySelector(".create-embed-container");
 const embedTextSend = document.getElementById("embed-text-send");
 const colorPicker = document.getElementById("color-picker");
 const colorVal = document.getElementById("color-value");
@@ -155,7 +159,7 @@ resetColorBtn.addEventListener("click", () => {
   colorPicker.value = resettedColor;
   colorVal.textContent = resettedColor;
   previewBG.style.backgroundColor = resettedColor;
-})
+});
 
 // Reset Inputs
 resetInputsBtn.addEventListener("click", resetInputs);
@@ -485,4 +489,60 @@ function updatePreviewField(){
       previewFieldsContainer.appendChild(previewField);
     }
   });
+}
+
+// Edit Embed
+createEmbedBtn.addEventListener("click", () => {
+  createEmbedContainer.style.display = "block";
+  editEmbedContainer.style.display = "none";
+});
+
+editEmbedBtn.addEventListener("click", () => {
+  editEmbedContainer.style.display = "flex";
+  createEmbedContainer.style.display = "none";
+});
+
+embedMsgIDInput.addEventListener("input", () => {
+  const messageID = embedMsgIDInput.value.trim();
+  if (!messageID) return;
+
+  fetchEmbedData(messageID)
+})
+embedMsgIDInput.addEventListener("keydown", (e) => {
+  if (e.key == "Enter"){
+    e.preventDefault();
+
+    const messageID = e.target.value.trim();
+    if (!messageID) return;
+
+    fetchEmbedData(messageID);
+  }
+});
+
+async function fetchEmbedData(messageID){
+  const channelID = embedChannelSelect.value;
+  try{
+    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelID}`);
+    const embedData = await response.json();
+
+    if (!response.ok){
+      throw new Error(embedData.error);
+      errIDMsg.textContent = "Invalid ID";
+      errIDMsg.style.display = "block";
+      createEmbedContainer.style.display = "none";
+    }
+
+    errIDMsg.textContent = "";
+    errIDMsg.style.display = "none";
+    createEmbedContainer.style.display = "block";
+
+    autoFillEmbed(embedData);
+
+  } catch (err){
+    console.error(`Failed to fetch embed data: ${err}`);
+  }
+}
+
+function autoFillEmbed(embedData){
+  console.log(embedData);
 }

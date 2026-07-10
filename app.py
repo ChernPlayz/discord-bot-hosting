@@ -272,5 +272,71 @@ def send_embed():
   except Exception as err:
     return jsonify({"error": f"Failed to send embed: {err}"}), 500
 
+@app.route('/api/edit_embed', methods=['GET'])
+def edit_embed():
+  if "oauth_token" not in session:
+    return jsonify({"error": "Unauthorized: Please log in first!"}), 401
+
+  bot = current_app.config.get("DISCORD_BOT")
+  if bot is None or not bot.is_ready():
+    return jsonify({"error": "Discord bot is not ready yet!"}), 503
+  
+  try:
+    message_id = request.args.get("message_id")
+    channel_id = request.args.get("channel_id")
+
+    if not message_id:
+      return jsonify({"error": "Missing message ID"}), 400
+    
+    channel = bot.get_channel(int(channel_id)) if channel_id else None
+
+    if not channel and channel_id:
+      channel = bot.loop.create_task(bot.fetch_channel(int(channel_id)))
+
+    if not channel:
+      return jsonify({"error": "Channel not found"}), 404
+
+    try:
+      future = bot.loop.create_task(channel.fetch_message(int(message_id)))
+      while not future.done():
+        import time
+        time.sleep(0.05)
+      message = future.result()
+    except Exception:
+      return jsonify({"error": "Message not found or bot cannot access it"}), 404
+
+    if not message.embeds:
+      return jsonify({"error": "The specified message ID does not contain a Discord Embed!"}), 400
+
+    target_embed = message.embeds[0]
+    payload = {
+      "embed_text_send": message.content,
+      "title": target_embed.title,
+      "description": target_embed.description,
+      "color": f"#{target_embed.color.value:06x}" if target_embed.color else "#5865f2",
+      "title_url": target_embed.url,
+      "image_url": target_embed.image.url if target_embed.image else None,
+      "thumbnail_url": target_embed.thumbnail.url if target_embed.thumbnail else None,
+      "author": {
+        "icon_name": target_embed.author.name if target_embed.author else None,
+        "icon_url": target_embed.author.icon_url if target_embed.author else None,
+        "icon_name_url": target_embed.author.url if target_embed.author else None
+      },
+      "footer": target_embed.footer.text if target_embed.footer else None,
+      "footer_icon_url": target_embed.footer.icon_url if target_embed.footer else None,
+      "fields": [
+        {
+          "title": field.name,
+          "desc": field.value,
+          "inline": field.inline
+        } for field in target_embed.fields
+      ]
+    }
+
+    return jsonify(payload), 200
+
+  except Exception as err:
+    return jsonify({"error": f"Failed to get embed data: {err}"}), 500
+
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5000, debug=True)

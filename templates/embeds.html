@@ -15,61 +15,69 @@
         <button id="edit-embed-btn">Edit Embed</button>
       </div>
 
-      <div class="word-count-container embed-text-send-area">
-        <textarea id="embed-text-send" maxlength="2000" placeholder="Text sent with the embed"></textarea>
-        <h5 class="word-count"><span id="current">0</span>/<span id="max">2000</span></h5>
+      <div class="edit-embed-container" style="display: none;">
+        <label for="embed-msg-ID-input">Enter embed message ID: </label>
+        <input type="text" id="embed-msg-ID-input" placeholder="Embed Message ID">
+        <span id="err-ID-msg">Invalid ID</span>
       </div>
 
-      <div class="embed-input-container">
-        <div class="embed-input-container-header">
-          <input type="color" id="color-picker" value="#5865f2">
-          <label for="color-picker" id="color-value">#5865f2</label>
-          <button id="reset-color-btn">Reset Color</button>
-          <button id="reset-inputs-btn">Reset Inputs</button>
-        </div>
-
-        <input type="url" id="icon-url" placeholder="Icon URL">
-        <input type="text" id="icon-name" placeholder="Icon Name">
-        <input type="url" id="icon-name-url" placeholder="Icon Name URL">
-
-        <div class="word-count-container title-area">
-          <input type="text" id="title" maxlength="256" placeholder="Title">
-          <h5 class="word-count"><span id="current">0</span>/<span id="max">256</span></h5>
-        </div>
-        <input type="url" id="title-url" placeholder="Title URL">
-
-        <div class="word-count-container embed-text-area">
-          <textarea id="embed-text" maxlength="2000" placeholder="Description"></textarea>
+      <div class="create-embed-container">
+        <div class="word-count-container embed-text-send-area">
+          <textarea id="embed-text-send" maxlength="2000" placeholder="Text sent with the embed"></textarea>
           <h5 class="word-count"><span id="current">0</span>/<span id="max">2000</span></h5>
         </div>
 
-        <div id="fields-container" max-fields="25"></div>
+        <div class="embed-input-container">
+          <div class="embed-input-container-header">
+            <input type="color" id="color-picker" value="#5865f2">
+            <label for="color-picker" id="color-value">#5865f2</label>
+            <button id="reset-color-btn">Reset Color</button>
+            <button id="reset-inputs-btn">Reset Inputs</button>
+          </div>
 
-        <div class="add-field-btn-area">
-          <button type="button" id="add-field-btn">Add Field</button>
-          <h5 class="field-count">0/0 Fields</h5>
+          <input type="url" id="icon-url" placeholder="Icon URL">
+          <input type="text" id="icon-name" placeholder="Icon Name">
+          <input type="url" id="icon-name-url" placeholder="Icon Name URL">
+
+          <div class="word-count-container title-area">
+            <input type="text" id="title" maxlength="256" placeholder="Title">
+            <h5 class="word-count"><span id="current">0</span>/<span id="max">256</span></h5>
+          </div>
+          <input type="url" id="title-url" placeholder="Title URL">
+
+          <div class="word-count-container embed-text-area">
+            <textarea id="embed-text" maxlength="2000" placeholder="Description"></textarea>
+            <h5 class="word-count"><span id="current">0</span>/<span id="max">2000</span></h5>
+          </div>
+
+          <div id="fields-container" max-fields="25"></div>
+
+          <div class="add-field-btn-area">
+            <button type="button" id="add-field-btn">Add Field</button>
+            <h5 class="field-count">0/0 Fields</h5>
+          </div>
+          
+          <input type="url" id="image-url" placeholder="Image URL">
+          <input type="url" id="thumbnail-url" placeholder="Thumbnail URL">
+          
+          <div class="word-count-container footer-area">
+            <input type="text" maxlength="256" id="footer" placeholder="Footer">
+            <h5 class="word-count"><span id="current">0</span>/<span id="max">256</span></h5>
+          </div>
+          <input type="url" id="footer-icon-url" placeholder="Footer Icon URL">
         </div>
-        
-        <input type="url" id="image-url" placeholder="Image URL">
-        <input type="url" id="thumbnail-url" placeholder="Thumbnail URL">
-        
-        <div class="word-count-container footer-area">
-          <input type="text" maxlength="256" id="footer" placeholder="Footer">
-          <h5 class="word-count"><span id="current">0</span>/<span id="max">256</span></h5>
+
+        <button id="add-embed-btn">Add Embed</button>
+
+        <div class="destination-container">
+          <h3>Destination</h3>
+          <select id="embed-guild-select" required>
+            <option value="" disabled selected>Loading guilds...</option>
+          </select>
+          <select id="embed-channel-select" required>
+            <option value="" disabled selected>Select a guild first</option>
+          </select>
         </div>
-        <input type="url" id="footer-icon-url" placeholder="Footer Icon URL">
-      </div>
-
-      <button id="add-embed-btn">Add Embed</button>
-
-      <div class="destination-container">
-        <h3>Destination</h3>
-        <select id="embed-guild-select" required>
-          <option value="" disabled selected>Loading guilds...</option>
-        </select>
-        <select id="embed-channel-select" required>
-          <option value="" disabled selected>Select a guild first</option>
-        </select>
       </div>
     </div>
 
