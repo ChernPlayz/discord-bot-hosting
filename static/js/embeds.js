@@ -400,7 +400,8 @@ async function addEmbed(){
 
     if (response.ok){
       if (isEditing){
-        alert("Embed updated successfully!")
+        alert("Embed updated successfully!");
+        createEmbedContainer.style.display = "none";
       } else {
         alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
       }
