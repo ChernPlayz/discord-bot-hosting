@@ -283,57 +283,49 @@ def edit_embed():
   
   try:
     message_id = request.args.get("message_id")
+    channel_id = request.args.get("channel_id")
 
-    if not message_id:
-      return jsonify({"error": "Missing message ID"}), 400
+    if not message_id or not channel_id:
+      return jsonify({"error": "Missing message ID or channel ID"}), 400
     
-    message = None
+    channel = bot.get_channel(int(channel_id))
+    if not channel:
+      try:
+        future_channel = bot.loop.create_task(bot.fetch_message(int(channel_id)))
+        while not future_channel.done():
+          import time
+          time.sleep(0.01)
+        channel = future_channel.result()
+      except Exception as err:
+        return jsonify({"error": f"Bot cannot access or find the channel: {err}"}), 404
 
-    for guild in bot.guilds:
-      for channel in guild.text_channels:
-        message = bot._connection._get_message(message_id)
-        
-        if not message:
-          try:
-            future = bot.loop.create_task(channel.fetch_message(int(message_id)))
-            while not future.done():
-              import time
-              time.sleep(0.01)
-            message = future.result()
-          except Exception:
-            continue
-
-        if message:
-          break # Stop looking through channels
-      
-      if message:
-        break # Stop looking through guilds
-
-    if not message:
-      return jsonify({"error": "Bot cannot find the Message ID!"}), 404
-
-    channel_id = message.channel.id
-    guild_id = message.guild.id
-
+    try:
+      future_msg = bot.loop.create_task(channel.fetch_message(int(message_id)))
+      while not future_msg.done():
+        import time
+        time.sleep(0.01)
+      message = future_msg.result()
+    except Exception as err:
+      return jsonify({"error": f"Message not found: {err}"}), 404
+    
     if not message.embeds:
-      return jsonify({"error": "Message exists, but it doesn't contain an embed layout!"}), 400
+      return jsonify({"error": "This message doesn't contain an embed!"}), 400
     
     target_embed = message.embeds[0]
     payload = {
-      "guild_id": guild_id,
       "channel_id": channel_id,
       "embed_text_send": message.content,
-      "title": target_embed.title,
-      "description": target_embed.description,
       "color": f"#{target_embed.color.value:06x}" if target_embed.color else "#5865f2",
-      "title_url": target_embed.url,
-      "image_url": target_embed.image.url if target_embed.image else None,
-      "thumbnail_url": target_embed.thumbnail.url if target_embed.thumbnail else None,
       "author": {
         "icon_name": target_embed.author.name if target_embed.author else None,
         "icon_url": target_embed.author.icon_url if target_embed.author else None,
         "icon_name_url": target_embed.author.url if target_embed.author else None
       },
+      "title": target_embed.title,
+      "title_url": target_embed.url,
+      "description": target_embed.description,
+      "image_url": target_embed.image.url if target_embed.image else None,
+      "thumbnail_url": target_embed.thumbnail.url if target_embed.thumbnail else None,
       "footer": target_embed.footer.text if target_embed.footer else None,
       "footer_icon_url": target_embed.footer.icon_url if target_embed.footer else None,
       "fields": [

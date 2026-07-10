@@ -435,12 +435,12 @@ a:hover{
   border-bottom: var(--border-primary);
 }
 
-#embed-msg-ID-input{
+#embed-msg-link-input{
   flex: 1;
   min-width: 150px;
 }
 
-#err-ID-msg{
+#err-link-msg{
   display: none;
   color: #ff4b4b;
   font-size: 14px;

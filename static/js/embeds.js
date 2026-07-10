@@ -3,8 +3,8 @@
 const createEmbedBtn = document.getElementById("create-embed-btn");
 const editEmbedBtn = document.getElementById("edit-embed-btn");
 const editEmbedContainer = document.querySelector(".edit-embed-container");
-const embedMsgIDInput = document.getElementById("embed-msg-ID-input");
-const errIDMsg = document.getElementById("err-ID-msg");
+const embedMsgLinkInput = document.getElementById("embed-msg-link-input");
+const errLinkMsg = document.getElementById("err-link-msg");
 const createEmbedContainer = document.querySelector(".create-embed-container");
 const embedTextSend = document.getElementById("embed-text-send");
 const colorPicker = document.getElementById("color-picker");
@@ -502,33 +502,47 @@ editEmbedBtn.addEventListener("click", () => {
   createEmbedContainer.style.display = "none";
 });
 
-embedMsgIDInput.addEventListener("input", () => {
-  const messageID = embedMsgIDInput.value.trim();
-  if (!messageID) return;
+embedMsgLinkInput.addEventListener("input", () => {
+  const linkInput = embedMsgLinkInput.value.trim();
+  if (!linkInput) return;
 
-  fetchEmbedData(messageID)
+  fetchEmbedData(linkInput)
 })
-embedMsgIDInput.addEventListener("keydown", (e) => {
+
+embedMsgLinkInput.addEventListener("keydown", (e) => {
   if (e.key == "Enter"){
     e.preventDefault();
 
-    const messageID = e.target.value.trim();
-    if (!messageID) return;
+    const linkInput = e.target.value.trim();
+    if (!linkInput) return;
 
-    fetchEmbedData(messageID);
+    fetchEmbedData(linkInput);
   }
 });
 
-async function fetchEmbedData(messageID){
+async function fetchEmbedData(linkInput){
   try{
-    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}`);
-    const embedData = await response.json();
+    const discordLinkRegex = /channels\/(\d+)\/(\d+)\/(\d+)/;
+    const match = linkInput.match(discordLinkRegex);
+
+    let guildID = None;
+    let channelID = None;
+    let messageID = None;
     
+    if (match){
+      guildID = match[1];
+      channelID = match[2];
+      messageID = match[3];
+    }
+
+    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelId}`);
+    const embedData = await response.json();
+
     if (!response.ok){
-      throw new Error(embedData.error);
       errIDMsg.textContent = "Invalid ID";
       errIDMsg.style.display = "block";
       createEmbedContainer.style.display = "none";
+      throw new Error(embedData.error);
     }
 
     errIDMsg.textContent = "";
@@ -544,4 +558,42 @@ async function fetchEmbedData(messageID){
 
 function autoFillEmbed(embedData){
   console.log(embedData);
+
+  embedTextSend.value = data.embed_text_send || "";
+  colorPicker.value = data.color || "#5865f2";
+
+  if (data.author){
+    iconURLInput.value = data.author.icon_url || "";
+    iconNameInput.value = data.author.icon_name || "";
+    iconNameURLInput.value = data.author.icon_name_url || "";
+  }
+
+  titleInput.value = data.title || "";
+  titleURLInput.value = data.title_url || "";
+
+  embedTextInput.value = data.description || "";
+
+  imageURLInput.value = data.image_url || "";
+  thumbnailURLInput.value = data.thumbnail_url || "";
+  footerInput.value = data.footer || "";
+  footerIconURLInput.value = data.footer_icon_url || "";
+
+  // Fields
+  fieldsContainer.innerHTML = "";
+  
+  if (data.fields && Array.isArray(data.fields)) {
+    data.fields.forEach(field => {
+      addField();
+
+      const fieldTitleInput = field.querySelector(".field-title");
+      const fieldDescInput = field.querySelector(".field-desc");
+      const inlineCheckbox = field.querySelector(".inline-checkbox");
+
+      if (fieldTitleInput) fieldTitleInput.value = field.title || "";
+      if (fieldDescInput) fieldDescInput.value = field.desc || "";
+      if (inlineCheckbox) inlineCheckbox.checked = field.inline || false;
+
+      initialiseField(field);
+    });
+  }
 }
