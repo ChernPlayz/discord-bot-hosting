@@ -520,11 +520,10 @@ embedMsgIDInput.addEventListener("keydown", (e) => {
 });
 
 async function fetchEmbedData(messageID){
-  const channelID = embedChannelSelect.value;
   try{
-    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}&channel_id=${channelID}`);
+    const response = await fetch(`${BACKEND_URL}/api/edit_embed?message_id=${messageID}`);
     const embedData = await response.json();
-
+    
     if (!response.ok){
       throw new Error(embedData.error);
       errIDMsg.textContent = "Invalid ID";

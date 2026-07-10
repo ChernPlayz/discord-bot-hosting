@@ -283,33 +283,45 @@ def edit_embed():
   
   try:
     message_id = request.args.get("message_id")
-    channel_id = request.args.get("channel_id")
 
     if not message_id:
       return jsonify({"error": "Missing message ID"}), 400
     
-    channel = bot.get_channel(int(channel_id)) if channel_id else None
+    message = None
 
-    if not channel and channel_id:
-      channel = bot.loop.create_task(bot.fetch_channel(int(channel_id)))
+    for guild in bot.guilds:
+      for channel in guild.text_channels:
+        message = bot._connection._get_message(message_id)
+        
+        if not message:
+          try:
+            future = bot.loop.create_task(channel.fetch_message(int(message_id)))
+            while not future.done():
+              import time
+              time.sleep(0.01)
+            message = future.result()
+          except Exception:
+            continue
 
-    if not channel:
-      return jsonify({"error": "Channel not found"}), 404
+        if message:
+          break # Stop looking through channels
+      
+      if message:
+        break # Stop looking through guilds
 
-    try:
-      future = bot.loop.create_task(channel.fetch_message(int(message_id)))
-      while not future.done():
-        import time
-        time.sleep(0.05)
-      message = future.result()
-    except Exception:
-      return jsonify({"error": "Message not found or bot cannot access it"}), 404
+    if not message:
+      return jsonify({"error": "Bot cannot find the Message ID!"}), 404
+
+    channel_id = message.channel.id
+    guild_id = message.guild.id
 
     if not message.embeds:
-      return jsonify({"error": "The specified message ID does not contain a Discord Embed!"}), 400
-
+      return jsonify({"error": "Message exists, but it doesn't contain an embed layout!"}), 400
+    
     target_embed = message.embeds[0]
     payload = {
+      "guild_id": guild_id,
+      "channel_id": channel_id,
       "embed_text_send": message.content,
       "title": target_embed.title,
       "description": target_embed.description,
