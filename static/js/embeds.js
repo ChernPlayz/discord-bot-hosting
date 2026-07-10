@@ -26,6 +26,7 @@ const thumbnailURLInput = document.getElementById("thumbnail-url");
 const footerInput = document.getElementById("footer");
 const footerIconURLInput = document.getElementById("footer-icon-url");
 const addEmbedBtn = document.getElementById("add-embed-btn");
+const destinationContainer = document.querySelector(".destination-container");
 const embedGuildSelect = document.getElementById("embed-guild-select");
 const embedChannelSelect = document.getElementById("embed-channel-select");
 
@@ -495,11 +496,15 @@ function updatePreviewField(){
 createEmbedBtn.addEventListener("click", () => {
   createEmbedContainer.style.display = "block";
   editEmbedContainer.style.display = "none";
+  destinationContainer.style.display = "flex";
+  addEmbedBtn.textContent = "Add Embed";
 });
 
 editEmbedBtn.addEventListener("click", () => {
   editEmbedContainer.style.display = "flex";
   createEmbedContainer.style.display = "none";
+  destinationContainer.style.display = "none";
+  addEmbedBtn.textContent = "Edit Embed";
 });
 
 embedMsgLinkInput.addEventListener("input", () => {
@@ -588,15 +593,20 @@ function autoFillEmbed(embedData){
     embedData.fields.forEach(field => {
       addField();
 
-      const fieldTitleInput = field.querySelector(".field-title");
-      const fieldDescInput = field.querySelector(".field-desc");
-      const inlineCheckbox = field.querySelector(".inline-checkbox");
+      const fields = fieldsContainer.querySelectorAll(".field");
+      const lastFieldEl = fields[fields.length - 1];
 
-      if (fieldTitleInput) fieldTitleInput.value = field.title || "";
-      if (fieldDescInput) fieldDescInput.value = field.desc || "";
-      if (inlineCheckbox) inlineCheckbox.checked = field.inline || false;
+      if (lastFieldEl){
+        const fieldTitleInput = lastFieldEl.querySelector(".field-title");
+        const fieldDescInput = lastFieldEl.querySelector(".field-desc");
+        const inlineCheckbox = lastFieldEl.querySelector(".inline-checkbox");
 
-      initialiseField(field);
+        if (fieldTitleInput) fieldTitleInput.value = field.title || "";
+        if (fieldDescInput) fieldDescInput.value = field.desc || "";
+        if (inlineCheckbox) inlineCheckbox.checked = field.inline || false;
+
+        initialiseField(lastFieldEl);
+      }
     });
   }
 }
