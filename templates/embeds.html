@@ -24,6 +24,7 @@
         <div class="color-picker-container">
           <input type="color" id="color-picker" value="#5865f2">
           <label for="color-picker" id="color-value">#5865f2</label>
+          <button id="reset-color-btn">Reset Color</button>
         </div>
 
         <input type="url" id="icon-url" placeholder="Icon URL">
@@ -31,13 +32,13 @@
         <input type="url" id="icon-name-url" placeholder="Icon Name URL">
 
         <div class="word-count-container title-area">
-          <input type="text" id="title" maxlength="300" placeholder="Title">
-          <h5 class="word-count"><span id="current">0</span>/<span id="max">300</span></h5>
+          <input type="text" id="title" maxlength="256" placeholder="Title">
+          <h5 class="word-count"><span id="current">0</span>/<span id="max">256</span></h5>
         </div>
         <input type="url" id="title-url" placeholder="Title URL">
 
         <div class="word-count-container embed-text-area">
-          <textarea id="embed-text" maxlength="2000" placeholder="Embed text"></textarea>
+          <textarea id="embed-text" maxlength="2000" placeholder="Description"></textarea>
           <h5 class="word-count"><span id="current">0</span>/<span id="max">2000</span></h5>
         </div>
 
@@ -52,8 +53,8 @@
         <input type="url" id="thumbnail-url" placeholder="Thumbnail URL">
         
         <div class="word-count-container footer-area">
-          <input type="text" maxlength="300" id="footer" placeholder="Footer">
-          <h5 class="word-count"><span id="current">0</span>/<span id="max">300</span></h5>
+          <input type="text" maxlength="256" id="footer" placeholder="Footer">
+          <h5 class="word-count"><span id="current">0</span>/<span id="max">256</span></h5>
         </div>
         <input type="url" id="footer-icon-url" placeholder="Footer Icon URL">
       </div>
@@ -73,6 +74,42 @@
 
     <div id="embed-preview">
       <h1>Embed Preview</h1>
+      <div class="preview-background">
+        <div class="preview-content">
+          <div class="preview-header">
+            <div class="preview-main">
+              <div class="preview-icon-container">
+                <img id="preview-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQESXQytdMKuqeLitmYaGjL28UnF-nRaZFy1Q&s" alt="Icon">
+                <a class="disabled-link" id="preview-icon-name-url" href="#"><span id="preview-icon-name">eeeeeee</span></a>
+              </div>
+              <a class="disabled-link" id="preview-title-url" href="#"><span id="preview-title">Title goes here</span></a>
+              <span id="preview-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati quos minus beatae porro, blanditiis magni voluptatum quo non, nam quibusdam repellendus quas numquam corporis at aspernatur soluta autem nesciunt optio.</span>
+            </div>
+            <img id="preview-thumbnail" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQESXQytdMKuqeLitmYaGjL28UnF-nRaZFy1Q&s" alt="Thumbnail">
+          </div>
+          <div class="preview-fields-container">
+            <!--
+            <div class="preview-field">
+              <span class="preview-field-title">Field Title 1</span>
+              <span class="preview-field-desc">Field Description 1</span>
+            </div>
+            <div class="preview-field inline">
+              <span class="preview-field-title">Field Title 2</span>
+              <span class="preview-field-desc">Field Description 2</span>
+            </div>
+            <div class="preview-field inline">
+              <span class="preview-field-title">Field Title 3</span>
+              <span class="preview-field-desc">Field Description 3</span>
+            </div>
+            -->
+          </div>
+          <img id="preview-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQESXQytdMKuqeLitmYaGjL28UnF-nRaZFy1Q&s" alt="Image">
+          <div class="preview-footer">
+            <img id="preview-footer-icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQESXQytdMKuqeLitmYaGjL28UnF-nRaZFy1Q&s" alt="Footer Icon">
+            <a href="#"><span id="preview-footer">Footer goes here</span></a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-{% endblock %}
+{% endblock %}span

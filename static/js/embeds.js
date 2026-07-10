@@ -5,6 +5,7 @@ const editEmbedBtn = document.getElementById("edit-embed-btn");
 const embedTextSend = document.getElementById("embed-text-send");
 const colorPicker = document.getElementById("color-picker");
 const colorVal = document.getElementById("color-value");
+const resetColorBtn = document.getElementById("reset-color-btn");
 const iconURLInput = document.getElementById("icon-url");
 const iconNameInput = document.getElementById("icon-name");
 const iconNameURLInput = document.getElementById("icon-name-url");
@@ -24,11 +25,38 @@ const embedGuildSelect = document.getElementById("embed-guild-select");
 const embedChannelSelect = document.getElementById("embed-channel-select");
 
 // Embed Preview
+const previewBG = document.querySelector(".preview-background");
+const previewIcon = document.getElementById("preview-icon");
+const previewIconName = document.getElementById("preview-icon-name");
+const previewIconNameURL = document.getElementById("preview-icon-name-url");
+const previewTitle = document.getElementById("preview-title");
+const previewTitleURL = document.getElementById("preview-title-url");
+const previewDesc = document.getElementById("preview-desc");
+const previewThumbnail = document.getElementById("preview-thumbnail");
+const previewFieldsContainer = document.querySelector(".preview-fields-container");
+const previewImage = document.getElementById("preview-image");
+const previewFooterIcon = document.getElementById("preview-footer-icon");
+const previewFooter = document.getElementById("preview-footer");
 
 /* DOM Content Loaded */
 document.addEventListener("DOMContentLoaded", () => {
   loadGuilds();
+
+  [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => wordCounter(input));
   fieldCount.textContent = `${fieldsContainer.children.length}/${maxFieldsLength} Fields`;
+
+  syncText(iconNameInput, previewIconName);
+  syncText(titleInput, previewTitle);
+  syncText(embedTextInput, previewDesc);
+  syncText(footerInput, previewFooter);
+
+  syncTextURL(iconNameURLInput, previewIconNameURL);
+  syncTextURL(titleURLInput, previewTitleURL);
+
+  syncImage(imageURLInput, previewImage);
+  syncImage(thumbnailURLInput, previewThumbnail);
+  syncImage(iconURLInput, previewIcon);
+  syncImage(footerIconURLInput, previewFooterIcon);
 });
 
 /* Main Functions */
@@ -113,8 +141,15 @@ async function loadChannels(guildId){
 }
 
 colorPicker.addEventListener("input", () => {
-  colorVal.textContent = `#${colorPicker.value.toUpperCase()}`;
+  colorVal.textContent = `${colorPicker.value.toUpperCase()}`;
+  previewBG.style.backgroundColor = colorPicker.value;
 });
+
+resetColorBtn.addEventListener("click", () => {
+  colorPicker.value = "#5865f2";
+  colorVal.textContent = "#5865f2";
+  previewBG.style.backgroundColor = "#5865f2";
+})
 
 function wordCounter(inputElement){
   const wordCountElement = inputElement.parentElement.querySelector(".word-count");
@@ -122,14 +157,16 @@ function wordCounter(inputElement){
 
   const currentWordCount = wordCountElement.querySelector("#current");
   const maxWordCount = wordCountElement.querySelector("#max");
+  const maxLength = inputElement.getAttribute("maxlength");
 
-  inputElement.addEventListener("input", () => {
-    const maxLength = inputElement.getAttribute("maxlength") || 2000;
+  function updateCount(){
     currentWordCount.textContent = inputElement.value.length;
     maxWordCount.textContent = maxLength;
-  });
+  }
+
+  updateCount();
+  inputElement.addEventListener("input", updateCount);
 }
-[embedTextSend, titleInput, embedTextInput, footerInput].forEach(wordCounter);
 
 addFieldBtn.addEventListener("click", addField);
 
@@ -169,9 +206,16 @@ function addField(){
 function initialiseField(field){
   const fieldTitleInput = field.querySelector(".field-title");
   const fieldDescInput = field.querySelector(".field-desc");
+  const inlineCheckbox = field.querySelector(".inline-checkbox");
   const removeFieldBtn = field.querySelector(".remove-field-btn");
 
   [fieldTitleInput, fieldDescInput].forEach(wordCounter);
+
+  [fieldTitleInput, fieldDescInput].forEach(element => {
+    element.addEventListener("input", updatePreviewField);
+  });
+
+  inlineCheckbox.addEventListener("change", updatePreviewField);
 
   removeFieldBtn.addEventListener("click", () => {
     field.remove();
@@ -185,6 +229,8 @@ function initialiseField(field){
         titleInput.placeholder = `Title for field ${index + 1}`;
       }
     });
+
+    updatePreviewField();
   });
 }
 
@@ -276,7 +322,8 @@ async function addEmbed(){
     if (response.ok){
       alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
       
-      // Reset Input
+      /* Reset Input */
+      // Embed Builder
       embedTextSend.value = "";
       colorPicker.value = "#5865f2";
       titleInput.value = "";
@@ -290,6 +337,24 @@ async function addEmbed(){
       footerInput.value = "";
       footerIconURLInput.value = "";
       fieldsContainer.innerHTML = "";
+      fieldCount.textContent = `0/${maxFieldsLength} Fields`
+      [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => wordCounter(input));
+      
+      // Embed Preview
+      syncText(iconNameInput, previewIconName);
+      syncText(titleInput, previewTitle);
+      syncText(embedTextInput, previewDesc);
+      syncText(footerInput, previewFooter);
+
+      syncTextURL(iconNameURLInput, previewIconNameURL);
+      syncTextURL(titleURLInput, previewTitleURL);
+
+      syncImage(imageURLInput, previewImage);
+      syncImage(thumbnailURLInput, previewThumbnail);
+      syncImage(iconURLInput, previewIcon);
+      syncImage(footerIconURLInput, previewFooterIcon);
+
+      updatePreviewField();
 
     } else{
       alert(`Failed to send embed: ${data.error}`);
@@ -302,4 +367,93 @@ async function addEmbed(){
     addEmbedBtn.innerText = "Add Embed";
     addEmbedBtn.disabled = false;
   }
+}
+
+// Embed Preview
+function syncText(inputElement, previewElement){
+  if (!inputElement || !previewElement) return;
+  previewElement.textContent = "";
+
+  inputElement.addEventListener("input", () => {
+    const value = inputElement.value.trim();
+    previewElement.textContent = value;
+
+    if (value === ""){
+      previewElement.style.display = fallbackText ? "block" : "none";
+    } else {
+      previewElement.style.display = "block";
+    }
+  });
+}
+
+function syncTextURL(inputElement, previewElement){
+  if (!inputElement || !previewElement) return;
+  previewElement.href = "#";
+
+  inputElement.addEventListener("input", () => {
+    const value = inputElement.value.trim();
+    previewElement.href = value;
+
+    if (value === ""){
+      previewElement.style.color = "#fff";
+      previewElement.classList.add("disabled-link");
+    } else {
+      previewElement.style.color = "#4D96EE";
+      previewElement.classList.remove("disabled-link");
+    }
+  });
+}
+
+function syncImage(inputElement, imgElement){
+  if (!inputElement || !imgElement) return;
+  imgElement.src = "";
+
+  inputElement.addEventListener("input", () => {
+    const url = inputElement.value.trim();
+    if (url){
+      imgElement.src = url;
+      imgElement.style.display = "block";
+    } else {
+      imgElement.style.display = "none";
+    }
+  });
+}
+
+function updatePreviewField(){
+  previewFieldsContainer.innerHTML = "";
+
+  const fields = fieldsContainer.querySelectorAll(".field");
+
+  fields.forEach(field => {
+    const fieldTitleEl = field.querySelector(".field-title");
+    const fieldDescEl = field.querySelector(".field-desc");
+    const inlineCheckbox = field.querySelector(".inline-checkbox");
+
+    if (!fieldTitleEl || !fieldDescEl) return;
+
+    const fieldTitleVal = fieldTitleEl.value.trim();
+    const fieldDescVal = fieldDescEl.value.trim();
+    const isInline = inlineCheckbox ? inlineCheckbox.checked : false;
+
+    if (fieldTitleVal || fieldDescVal){
+      const previewField = document.createElement("div");
+      previewField.classList.add("preview-field");
+      if (isInline) previewField.classList.add("inline");
+
+      const previewFieldTitle = document.createElement("span");
+      previewFieldTitle.classList.add("preview-field-title");
+      previewFieldTitle.textContent = fieldTitleVal;
+      previewFieldTitle.style.display = "block";
+
+      const previewFieldDesc = document.createElement("span");
+      previewFieldDesc.classList.add("preview-field-desc");
+      previewFieldDesc.textContent = fieldDescVal;
+      previewFieldDesc.style.display = "block";
+
+      previewField.appendChild(previewFieldTitle);
+      previewField.appendChild(previewFieldDesc);
+
+      previewFieldsContainer.appendChild(previewField);
+    }
+  });
 }
