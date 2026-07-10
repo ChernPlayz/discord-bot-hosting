@@ -562,30 +562,30 @@ async function fetchEmbedData(linkInput){
 function autoFillEmbed(embedData){
   console.log(embedData);
 
-  embedTextSend.value = data.embed_text_send || "";
-  colorPicker.value = data.color || "#5865f2";
+  embedTextSend.value = embedData.embed_text_send || "";
+  colorPicker.value = embedData.color || "#5865f2";
 
-  if (data.author){
-    iconURLInput.value = data.author.icon_url || "";
-    iconNameInput.value = data.author.icon_name || "";
-    iconNameURLInput.value = data.author.icon_name_url || "";
+  if (embedData.author){
+    iconURLInput.value = embedData.author.icon_url || "";
+    iconNameInput.value = embedData.author.icon_name || "";
+    iconNameURLInput.value = embedData.author.icon_name_url || "";
   }
 
-  titleInput.value = data.title || "";
-  titleURLInput.value = data.title_url || "";
+  titleInput.value = embedData.title || "";
+  titleURLInput.value = embedData.title_url || "";
 
-  embedTextInput.value = data.description || "";
+  embedTextInput.value = embedData.description || "";
 
-  imageURLInput.value = data.image_url || "";
-  thumbnailURLInput.value = data.thumbnail_url || "";
-  footerInput.value = data.footer || "";
-  footerIconURLInput.value = data.footer_icon_url || "";
+  imageURLInput.value = embedData.image_url || "";
+  thumbnailURLInput.value = embedData.thumbnail_url || "";
+  footerInput.value = embedData.footer || "";
+  footerIconURLInput.value = embedData.footer_icon_url || "";
 
   // Fields
   fieldsContainer.innerHTML = "";
   
-  if (data.fields && Array.isArray(data.fields)) {
-    data.fields.forEach(field => {
+  if (embedData.fields && Array.isArray(embedData.fields)) {
+    embedData.fields.forEach(field => {
       addField();
 
       const fieldTitleInput = field.querySelector(".field-title");
