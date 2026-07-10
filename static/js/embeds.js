@@ -6,6 +6,7 @@ const embedTextSend = document.getElementById("embed-text-send");
 const colorPicker = document.getElementById("color-picker");
 const colorVal = document.getElementById("color-value");
 const resetColorBtn = document.getElementById("reset-color-btn");
+const resetInputsBtn = document.getElementById("reset-inputs-btn");
 const iconURLInput = document.getElementById("icon-url");
 const iconNameInput = document.getElementById("icon-name");
 const iconNameURLInput = document.getElementById("icon-name-url");
@@ -38,6 +39,9 @@ const previewImage = document.getElementById("preview-image");
 const previewFooterIcon = document.getElementById("preview-footer-icon");
 const previewFooter = document.getElementById("preview-footer");
 
+// Other Vars
+const resettedColor = "#5865f2";
+
 /* DOM Content Loaded */
 document.addEventListener("DOMContentLoaded", () => {
   loadGuilds();
@@ -61,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* Main Functions */
 // Embed Builder
+// Guilds & Channels
 async function loadGuilds(){
   try{
     embedGuildSelect.innerHTML = `
@@ -140,17 +145,72 @@ async function loadChannels(guildId){
   }
 }
 
+// Color Picker
 colorPicker.addEventListener("input", () => {
   colorVal.textContent = `${colorPicker.value.toUpperCase()}`;
   previewBG.style.backgroundColor = colorPicker.value;
 });
 
 resetColorBtn.addEventListener("click", () => {
-  colorPicker.value = "#5865f2";
-  colorVal.textContent = "#5865f2";
-  previewBG.style.backgroundColor = "#5865f2";
+  colorPicker.value = resettedColor;
+  colorVal.textContent = resettedColor;
+  previewBG.style.backgroundColor = resettedColor;
 })
 
+// Reset Inputs
+resetInputsBtn.addEventListener("click", resetInputs);
+
+function resetInputs(){
+  // Embed Builder
+  embedTextSend.value = "";
+  colorPicker.value = resettedColor;
+  colorVal.textContent = resettedColor;
+  titleInput.value = "";
+  titleURLInput.value = "";
+  embedTextInput.value = "";
+  iconURLInput.value = "";
+  iconNameInput.value = "";
+  iconNameURLInput.value = "";
+  imageURLInput.value = "";
+  thumbnailURLInput.value = "";
+  footerInput.value = "";
+  footerIconURLInput.value = "";
+  fieldsContainer.innerHTML = "";
+  fieldCount.textContent = `0/${maxFieldsLength} Fields`;
+  [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => {
+    input.value = ""
+    const container = input.closest(".word-count-container");
+    if (container){
+      const counterSpan = container.querySelector("#current");
+      if (counterSpan){
+        counterSpan.textContent = "0";
+      }
+    }
+  });
+  
+  // Embed Preview
+  previewBG.style.backgroundColor = resettedColor;
+
+  [previewIconName, previewTitle, previewDesc, previewFooter].forEach(input => {
+    input.style.display = "none";
+    input.textContent = "";
+  });
+
+  [previewIconNameURL, previewTitleURL].forEach(input => {
+    input.href = "#";
+    input.style.color = "#fff";
+    input.classList.add("disabled-link");
+  });
+
+  [previewImage, previewThumbnail, previewIcon, previewFooterIcon].forEach(input => {
+    input.style.display = "none";
+    input.src = "";
+  });
+
+  previewFieldsContainer.innerHTML = "";
+}
+
+// Word Counter
 function wordCounter(inputElement){
   const wordCountElement = inputElement.parentElement.querySelector(".word-count");
   if (!wordCountElement) return;
@@ -168,6 +228,7 @@ function wordCounter(inputElement){
   inputElement.addEventListener("input", updateCount);
 }
 
+// Add Fields
 addFieldBtn.addEventListener("click", addField);
 
 function addField(){
@@ -234,6 +295,7 @@ function initialiseField(field){
   });
 }
 
+// Add Embed
 addEmbedBtn.addEventListener("click", addEmbed);
 
 async function addEmbed(){
@@ -289,7 +351,7 @@ async function addEmbed(){
   const info = {
     channel_id: embedChannelSelect.value,
     embed_text_send: embedTextSend.value || null,
-    color: colorPicker.value || "#5865f2",
+    color: colorPicker.value || resettedColor,
     title: titleInput.value || null,
     title_url: titleURLInput.value || null,
     description: embedTextInput.value || null,
@@ -321,54 +383,7 @@ async function addEmbed(){
 
     if (response.ok){
       alert(`Embed successfully sent to ${embedChannelSelect.options[embedChannelSelect.selectedIndex].textContent}!`);
-      
-      /* Reset Input */
-      // Embed Builder
-      embedTextSend.value = "";
-      colorPicker.value = "#5865f2";
-      titleInput.value = "";
-      titleURLInput.value = "";
-      embedTextInput.value = "";
-      iconURLInput.value = "";
-      iconNameInput.value = "";
-      iconNameURLInput.value = "";
-      imageURLInput.value = "";
-      thumbnailURLInput.value = "";
-      footerInput.value = "";
-      footerIconURLInput.value = "";
-      fieldsContainer.innerHTML = "";
-      fieldCount.textContent = `0/${maxFieldsLength} Fields`;
-      [embedTextSend, titleInput, embedTextInput, footerInput].forEach(input => {
-        input.value = ""
-        const container = input.closest(".word-count-container");
-        if (container){
-          const counterSpan = container.querySelector("#current");
-          if (counterSpan){
-            counterSpan.textContent = "0";
-          }
-        }
-      });
-      
-      // Embed Preview
-      previewBG.style.backgroundColor = "#5865f2";
-
-      [previewIconName, previewTitle, previewDesc, previewFooter].forEach(input => {
-        input.style.display = "none";
-        input.textContent = "";
-      });
-
-      [previewIconNameURL, previewTitleURL].forEach(input => {
-        input.href = "#";
-        input.style.color = "#fff";
-        input.classList.add("disabled-link");
-      });
-
-      [previewImage, previewThumbnail, previewIcon, previewFooterIcon].forEach(input => {
-        input.style.display = "none";
-        input.src = "";
-      });
-
-      previewFieldsContainer.innerHTML = "";
+      resetInputs();
 
     } else{
       alert(`Failed to send embed: ${data.error}`);

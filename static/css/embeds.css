@@ -107,16 +107,17 @@ input:focus{
   padding: 1rem 0;
   border-bottom: var(--border-primary);
   grid-template-areas:
-    "color-picker-container color-picker-container color-picker-container color-picker-container color-picker-container color-picker-container"
-    "icon-url               icon-url               icon-name              icon-name              icon-name-url          icon-name-url"
-    "title-area             title-area             title-area             title-area             title-url              title-url"
-    "embed-text-area        embed-text-area        embed-text-area        embed-text-area        embed-text-area        embed-text-area"
-    "fields-container       fields-container       fields-container       fields-container       fields-container       fields-container"
-    "add-field-btn-area     add-field-btn-area     add-field-btn-area     add-field-btn-area     add-field-btn-area     add-field-btn-area"
-    "image-url              image-url              image-url              thumbnail-url          thumbnail-url          thumbnail-url"
-    "footer-area            footer-area            footer-area            footer-icon-url        footer-icon-url        footer-icon-url";
+    "embed-input-container-header embed-input-container-header embed-input-container-header embed-input-container-header embed-input-container-header embed-input-container-header"
+    "icon-url                     icon-url                     icon-name                    icon-name                    icon-name-url                icon-name-url"
+    "title-area                   title-area                   title-area                   title-area                   title-url                    title-url"
+    "embed-text-area              embed-text-area              embed-text-area              embed-text-area              embed-text-area              embed-text-area"
+    "fields-container             fields-container             fields-container             fields-container             fields-container             fields-container"
+    "add-field-btn-area           add-field-btn-area           add-field-btn-area           add-field-btn-area           add-field-btn-area           add-field-btn-area"
+    "image-url                    image-url                    image-url                    thumbnail-url                thumbnail-url                thumbnail-url"
+    "footer-area                  footer-area                  footer-area                  footer-icon-url              footer-icon-url              footer-icon-url";
 }
 
+.embed-input-container-header {grid-area: embed-input-container-header}
 #icon-url {grid-area: icon-url;}
 #icon-name {grid-area: icon-name;}
 #icon-name-url {grid-area: icon-name-url;}
@@ -159,11 +160,11 @@ input:focus{
   margin-bottom: 25px;
 }
 
-.color-picker-container{
-  grid-area: color-picker-container;
+.embed-input-container-header{
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: 10px;
 }
 
 #color-picker{
@@ -172,15 +173,15 @@ input:focus{
   height: 30px;
 }
 
-#color-value{
-  margin-left: 5px;
-}
-
-#reset-color-btn{
-  margin-left: 20px;
+#reset-color-btn, #reset-inputs-btn{
   width: 120px;
   height: 30px;
   padding: 5px 10px;
+  background-color: #0ba360;
+}
+
+#reset-inputs-btn{
+  margin-left: auto;
 }
 
 #fields-container{
