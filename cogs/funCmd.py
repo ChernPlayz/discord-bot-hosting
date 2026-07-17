@@ -26,7 +26,7 @@ class Fun(commands.Cog):
     await interaction.response.send_message(f"Hi! {hooman.mention} :D")
 
   @app_commands.command(name="print", description="Print any message")
-  async def printSth(self, interaction: discord.Interaction, msg: str):
+  async def print(self, interaction: discord.Interaction, msg: str):
     await interaction.response.send_message(msg)
 
   @app_commands.command(name="choose", description="Randomly choose 1 of the option")

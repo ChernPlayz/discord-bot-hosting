@@ -8,6 +8,14 @@ class Calculator(commands.Cog):
     self.ans_memory = {}
 
   def evaluate(self, user_id: int, expression: str):
+    builtins = {
+      "int": int,
+      "float": float,
+      "abs": abs,
+      "pow": pow,
+      "round": round,
+    }
+
     allowed_names = {
       "sin": math.sin,
       "cos": math.cos,
@@ -17,13 +25,12 @@ class Calculator(commands.Cog):
       "ln": math.log,
       "pi": math.pi,
       "e": math.e,
-      "abs": abs,
-      "pow": pow
+      **builtins
     }
 
     ans = self.ans_memory.get(user_id, 0)
 
-    expression = expression.replace("Ans", str(ans))
+    expression = expression.replace("ans", str(ans))
     expression = expression.replace("^", "**")
     expression = expression.replace(" ", "")
 
@@ -31,7 +38,7 @@ class Calculator(commands.Cog):
       return "Invalid characters"
 
     try:
-      result = eval(expression, {"__builtins__": {}}, allowed_names)
+      result = eval(expression, {"__builtins__": builtins}, allowed_names)
       self.ans_memory[user_id] = result
       return result
 
@@ -40,7 +47,7 @@ class Calculator(commands.Cog):
 
   @app_commands.command(name="calc", description="Type in any calculation")
   async def calculator(self, interaction: discord.Interaction, expression: str):
-    result = self.evaluate(interaction.user.id, expression)
+    result = self.evaluate(interaction.user.id, expression.lower())
     await interaction.response.send_message(result)
 
 async def setup(bot):

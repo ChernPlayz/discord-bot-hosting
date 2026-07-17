@@ -419,6 +419,9 @@ def edit_embed():
     return jsonify({"success": True, "message": "Embed updated successfully!"}), 200
   except Exception as err:
     return jsonify({"error": f"Failed to update embed: {err}"}), 500
-  
+
+# Weather
+
+
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5000, debug=True)
